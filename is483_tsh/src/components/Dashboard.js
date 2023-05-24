@@ -9,9 +9,10 @@ function Dashboard() {
     const [user, loading, error] = useAuthState(auth);
     const [name, setName] = useState("");
     const navigate = useNavigate();
+
     const fetchUserName = async () => {
         try{
-            const q = query(collection(db, "users"), where ("uid", "==", user?.id));
+            const q = query(collection(db, "users"), where("uid", "==", user?.uid));
             const doc = await getDocs(q);
             const data = doc.docs[0].data();
             setName(data.name);
