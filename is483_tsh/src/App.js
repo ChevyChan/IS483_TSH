@@ -1,25 +1,21 @@
-import { useState, useEffect } from 'react';
-
-import Login from './components/Login';
-import Home from './components/Home';
-import firebase_auth from './services/firebase_auth';
-
 import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from './components/Login';
+import Register from './components/Register';
+import Reset from './components/Reset';
+import Dashboard from './components/Dashboard';
 
 function App() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    firebase_auth().onAuthStateChanged(user => {
-      setUser(user);
-    })
-  }, [])
-
-  console.log(user);
-
   return (
     <div className="app">
-      {user? <Home user={user} /> : <GoogleLogin />}
+      <Router>
+        <Routes>
+          <Route exact path="/" element={<Login />} />
+          <Route exact path="/register" element={<Register />} />
+          <Route exact path="/reset" element={<Reset />} />
+          <Route exact path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
