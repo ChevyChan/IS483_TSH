@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, logInWithEmailAndPassword, signInWithGoogle } from "../services/firebase_auth";
+import { auth, logInWithEmailAndPassword, signInWithGoogle, signInWithMicrosoft } from "../services/firebase_auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import '../Login.css';
@@ -76,6 +76,9 @@ function Login() {
           </button>
           <button className="login__btn login__google" onClick={signInWithGoogle}>
             Login with Google
+          </button>
+          <button className="login__btn login__microsoft" onClick={signInWithMicrosoft}>
+            Login with Microsoft
           </button>
           <div>
             <Link to="/reset">Forgot Password</Link>

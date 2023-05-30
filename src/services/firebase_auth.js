@@ -1,8 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, update, onValue } from "firebase/database";
-import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, query, getDocs, collection, where, addDoc, } from "firebase/firestore";
+import { OAuthProvider, GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, query, getDocs, collection, where, addDoc, getDoc, } from "firebase/firestore";
 import { getStorage } from 'firebase/storage';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -30,7 +30,7 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 const googleProvider = new GoogleAuthProvider();
-//provider.setCustomParameters({ prompt: 'select_account' });
+const microsoftProvider = new OAuthProvider('microsoft.com');
 
 export const signInWithGoogle = async() => {
     try{   
@@ -50,6 +50,30 @@ export const signInWithGoogle = async() => {
         console.error(err);
         alert(err.message);
     }
+}
+
+const signInWithMicrosoft = async() => {
+  try{
+    const res = await signInWithPopup(auth, microsoftProvider);
+    const user = res.user;
+    const user_detail = query(collection(db, "users"), where("uid", "==", user.uid));
+    const docs = await getDocs(user_detail);
+    if(docs.docs.length == 0) {
+      await addDoc(collection(db, "users"), {
+          uid: user.uid,
+          name: user.displayName,
+          authProvider: "microsoft",
+          email: user.email
+      });
+    }
+
+    //Get the OAuth access token and ID token 
+    const credentials = OAuthProvider.credentialFromResult(res);
+    const accessToken = credentials.accessToken;
+    const idToken = credentials.idToken;
+  }catch(error){
+    console.error(error);
+  }
 }
 
 const logInWithEmailAndPassword = async (email, password) => {
@@ -97,7 +121,8 @@ export {
     registerWithEmailAndPassword,
     sendPasswordReset,
     logout,
-    storage
+    storage,
+    signInWithMicrosoft
 };
 
 

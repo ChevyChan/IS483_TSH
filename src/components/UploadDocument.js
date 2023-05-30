@@ -56,13 +56,6 @@ function UploadDocument() {
         });
     };
 
-    const loadDocuments = async () => {
-        const documentURL = await handleListing();
-        console.log(documentURL);
-
-
-    }
-
     return(
         <>
             <div>
@@ -72,7 +65,7 @@ function UploadDocument() {
             </div>
 
             <div>
-                <button onClick={loadDocuments}>List Documents</button> 
+                <button onClick={handleListing}>List Documents</button> 
                 <div>
                     <ol>
                         {url.map(urls => <li>{urls}</li> )}
