@@ -22,6 +22,10 @@ function Dashboard() {
         }
     };
 
+    const navigateToUpload = () => {
+        navigate('/upload_document')
+    }
+
     useEffect(() => {
         if(loading) return;
         if(!user) return navigate("/");
@@ -37,6 +41,10 @@ function Dashboard() {
                 <button className="dashboard__btn" onClick={logout}>
                 Logout
                 </button>
+                <button className="dashboard__btn" onClick={navigateToUpload}>
+                Upload Documents
+                </button>
+                
             </div>
         </div>
     );

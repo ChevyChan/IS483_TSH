@@ -4,18 +4,52 @@ import { auth, logInWithEmailAndPassword, signInWithGoogle } from "../services/f
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import '../Login.css';
+import axios, { HttpStatusCode } from 'axios';
 
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [user, loading, error] = useAuthState(auth);
+    const [postData, setPostData] = useState({body: ''})
     const navigate = useNavigate();
     useEffect(() => {
       if (loading) {
         // maybe trigger a loading screen
         return;
       }
-      if (user) navigate("/dashboard");
+      if (user) {
+        fetch('http://localhost:5001/v1/user/create_user/' + user.uid + '/' + user.email, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: user.displayName,
+            email: user.email,
+            auth_provider: user.providerData[0].providerId,
+            member_type: "Employee",
+            "company_name": "Tong Tah",
+            "company_address": "123 Adam Rd #01-01",
+            "company_contact": "63219876",
+            "company_email": "support@tongtah.sg"
+          })
+        })
+          .then(response => {
+            if(!HttpStatusCode.Ok){ 
+              throw new Error('Bad Request');
+            }
+          })
+          .then(data => {
+            // Handle the response data
+            console.log(data);
+          })
+          .catch(error => {
+            //Handle any errors
+            console.error(error);
+          })
+
+        navigate("/dashboard");
+      }
     }, [user, loading]);
     return (
       <div className="login">
