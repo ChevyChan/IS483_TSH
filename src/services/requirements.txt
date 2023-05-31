@@ -16,3 +16,4 @@ qrcode==7.4.2
 requests==2.28.2
 SQLAlchemy==1.4.46
 twilio==7.16.4
+
