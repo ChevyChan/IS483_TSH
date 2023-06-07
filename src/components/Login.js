@@ -17,6 +17,7 @@ function Login() {
         // maybe trigger a loading screen
         return;
       }
+      // 2 types of user: Employees and Delivery Partners
       if (user) {
         fetch('http://localhost:5001/v1/user/create_user/' + user.uid + '/' + user.email, {
           method: 'POST',
