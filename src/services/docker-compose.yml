@@ -1,0 +1,89 @@
+version: "3.8"
+
+volumes:
+  rabbitmq_data:
+
+services:
+  
+  ###################################
+  # User: The User microservice
+  ###################################
+  # user:
+  #   build:
+  #     context: ./
+  #     dockerfile: user.Dockerfile
+  #   image: jkpok/user:fyp
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/esd_project
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "8000:8000"
+ 
+  ####################################
+  # RabbitMQ: The messaging broker
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: fyp-rabbit3
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+  #################################################
+  # Notify: The Notify microservice
+  #################################################
+  notify:
+    build:
+      context: ./
+      dockerfile: notify.Dockerfile
+    image: jkpok/notify:fyp
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
+  #################################################
+  # Error: The Error microservice
+  #################################################
+  error:
+    build:
+      context: ./
+      dockerfile: error.Dockerfile
+    image: jkpok/error:fyp
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
+  ###############################################
+  # Trigger Email: The Trigger email microservice
+  #     - user
+  #   - bidding
+  ###############################################
+  trigger_email:
+    build:
+      context: ./
+      dockerfile: trigger_email2.Dockerfile
+    image: jkpok/trigger_email:fyp
+    restart: always
+    depends_on:
+      - notify
+      - error
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      #user_URL: http://user:8000/userReg
+      #events_URL: http://events:5200/v1/event_registration/approve_student_details
+      #revoke_user_URL: "http://user:8000/userUnreg"
+      #revoke_event_URL: http://events:5200/v1/event_registration/revoke_event_student_details
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5100:5100"
