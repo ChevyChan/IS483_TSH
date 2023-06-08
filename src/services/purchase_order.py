@@ -35,51 +35,44 @@ class Purchase(db.Model):
     def json(self):
         return {"Purchase_uuid": self.purchase_uuid, "Purchase_date": self.purchase_date, "Purchase_Order_File_URL": self.purchase_order_file_url, "UserUID": self.UserUID}
     
-    @app.route("/v1/purchase_order/create_purchase", methods=['POST'])
-    def create_purchase():
+    # The purchase order will be created by the user through the web portal or it will be simulated
+    @app.route("/v1/purchase_order/create_purchase_order", methods=['POST'])
+    def create_purchase_order():
         data = request.get_json()
-        print(data)
-
-        if(data):
-            return jsonify(
-                {
-                    "code": 400, 
-                    "data": {
-                        "Purchase_uuid": data["purchase_uuid"],
-                        "Purchase_date": data["purchase_date"],
-                        "Purchase_Order_File_URL": data["purchase_order_file_url"],
-                        "UserUID": data["UserUID"]
-                    },
-                    "message": "Purchase Order for " + data["UserUID"] + " have been created." 
-                },400
-            )
         
         purchase_order = Purchase(**data)
 
         try:
             db.session.add(purchase_order)
             db.session.commit()
-        except:
-            return jsonify(
-                {
-                    "code": 500,
-                    "data": {
-                        "message": "An error occured while creating the Purchase."
-                    }
-                },
-            ),500
+        except Exception as e:
+            # Unexpected error in code
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            ex_str = str(e) + " at " + str(exc_type) + ": " + \
+                fname + ": line " + str(exc_tb.tb_lineno)
+            print(ex_str)
+
+            return jsonify({
+                "code": 500,
+                "message": "bidding.py internal error: " + ex_str
+            }), 500
         
         return jsonify(
             {
                 "code": 200, 
                 "data": {
-                    "purchase_order_result": {
-                        "purchase_order_details": purchase_order.json()
-                    }
+                    "Purchase_uuid": data["purchase_uuid"],
+                    "Purchase_date": data["purchase_date"],
+                    "Purchase_Order_File_URL": data["purchase_order_file_url"],
+                    "UserUID": data["UserUID"]
+                    },
+                    "message": "Purchase Order for " + str(data["UserUID"]) + " have been created." 
                 }
-            }
         ),201
 
+    # Update the purchase order based on the content of the purchase order document.
+    # After purchase order have been updated, the web portal will trigger an update to the delivery order.
     @app.route("/v1/purchase_order/update_purchase/<string:purchase_uuid>", methods=["PUT"])
     def update_purchase(purchase_uuid):
         purchase_order = Purchase.query.filter_by(purchase_uuid=purchase_uuid).first()
