@@ -43,12 +43,12 @@ class Bidding(db.Model):
     @app.route("/v1/bidding/create_bidding", methods=['POST'])
     def create_bidding():
         data = request.get_json()
-        print(data)
+        
+        bidding_details = Bidding.query.filter_by(bidding_date=data["bidding_date"], bidding_time=data["bidding_time"]).first()
 
-        if(Bidding.query.filter_by(title=data["title"], description=data["description"], bidding_date=data["bidding_date"], bidding_time=data["bidding_time"]).first()):
-            bidding = Bidding(**data)
-
+        if not bidding_details :
             try:
+                bidding = Bidding(**data)
                 db.session.add(bidding)
                 db.session.commit()
             except Exception as e:
@@ -74,7 +74,7 @@ class Bidding(db.Model):
                             "Bidding_Time": data["bidding_time"],
                             "Number_Of_Vehicles": data["num_of_vehicles"]
                         },
-                        "message": "Bidding for " + data["title"] + " to reserve " + data["num_of_vehicles"] + " delivery vehicles set to end on " + data["bidding_date"] + " at " + data["bidding_time"] + " have been posted." 
+                        "message": "Bidding for " + data["title"] + " to reserve " + str(data["num_of_vehicles"]) + " delivery vehicles set to end on " + data["bidding_date"] + " at " + data["bidding_time"] + " have been posted." 
                 }
             ),201
         else:

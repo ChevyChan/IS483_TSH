@@ -64,7 +64,6 @@ class Bidding_Offer(db.Model):
     @app.route("/v1/bidding_offer/create_bidding_offer/<string:UserUID>/<string:bidding_uuid>", methods=['POST'])
     def create_bidding_offer(UserUID, bidding_uuid):
         data = request.get_json()
-        print(data)
 
         bid_offer = Bidding.query.filter_by(bidding_uuid=bidding_uuid).first()
         exist_bid = Bidding_Offer.query.filter_by(UserUID=UserUID, BiddingUID=bidding_uuid).first()
@@ -113,11 +112,11 @@ class Bidding_Offer(db.Model):
                     "message": "Bidding Offer already exists."  
                 }
             ),400
-        
-        return jsonify({
-                "code": 500,
-                "message": "bidding.py internal error: " + ex_str
-            }), 500
+        else:
+            return jsonify({
+                    "code": 500,
+                    "message": "bidding.py internal error: " + ex_str
+                }), 500
 
     # Display all the bidding offers that the bidding have received from the delivery partners
     ## Note: Display all bidding offers in incremental order at frontend js
