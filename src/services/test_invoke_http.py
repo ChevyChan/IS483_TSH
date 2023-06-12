@@ -290,11 +290,24 @@ print()
 # print( create_results )
 # print()
 
-print("==================== Update bidding bid status ======================")
+# print("==================== Update bidding bid status (Acceptance) ======================")
+# # invoke bidding microservice to update a bid
+# bidding_offer_uuid = '3ef26090-8b4c-41af-ab38-5266e8aa728e'
+# bidding_details = { "Bidding_Offer_Result": "Accepted"}
+# create_results = invoke_http("http://localhost:5001/v1/bidding_offer/update_bidding_offer_status/" + bidding_offer_uuid, method='PUT', 
+#                              json=bidding_details
+#                              )
+
+# print()
+# print( create_results )
+# print()
+
+
+print("==================== Update bidding bid status (Rejection) ======================")
 # invoke bidding microservice to update a bid
-bidding_offer_uuid = '3dcb7c86-4a4a-4a52-9210-d74d68085091'
-bidding_details = { "Bidding_Offer_Result": "Accepted"}
-create_results = invoke_http("http://localhost:5001/v1/bidding_offer/update_bidding_offer_status/" + bidding_offer_uuid, method='PUT', 
+bidding_offer_uuid = '3ef26090-8b4c-41af-ab38-5266e8aa728e'
+bidding_details = { "Bidding_Offer_Result": "Rejected"}
+create_results = invoke_http("http://localhost:5001/v1/bidding_offer/update_bidding_offer_status_rejection/" + bidding_offer_uuid, method='PUT', 
                              json=bidding_details
                              )
 
