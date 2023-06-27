@@ -5,6 +5,7 @@ import Register from './components/Register';
 import Reset from './components/Reset';
 import Dashboard from './components/Dashboard';
 import UploadDocument from './components/UploadDocument';
+import MyCalender from './components/calendar/MyCalendar';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route exact path="/reset" element={<Reset />} />
           <Route exact path="/dashboard" element={<Dashboard />} />
           <Route exact path="/upload_document" element={<UploadDocument/>} />
+          <Route exact path="/calendar" element={<MyCalender/>} />
         </Routes>
       </Router>
     </div>

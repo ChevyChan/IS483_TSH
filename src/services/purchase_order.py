@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
+import requests
 import json 
 import uuid
 
@@ -45,6 +46,19 @@ class Purchase(db.Model):
         try:
             db.session.add(purchase_order)
             db.session.commit()
+
+            # Read the data from the excel/PDF file uploaded to Firebase Storage
+            # Trigger create delivery order here using requests
+            ## Get the response of the delivery_uid
+            # # result = requests.post("http://127.0.0.1:5001/v1/delivery_order/create_delivery_order")
+            # Unpack the json result and retrieve the delivery uuid
+            # # delivery_order_result = json.loads(result)
+            # # delivery_uuid = delivery_order_result["delivery_uuid"]
+
+            # Use the PurchaseUID and DeliveryUID to create Purchase_Delivery Order
+            ## Parameters are to be filled up
+            ### purchase_delivery_result = requests.post("http://127.0.0.1:5001/v1/purchase_delivery/create_purchase_delivery_order/data["purchase_uuid"]/delivery_uuid")
+
         except Exception as e:
             # Unexpected error in code
             exc_type, exc_obj, exc_tb = sys.exc_info()

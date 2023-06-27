@@ -26,6 +26,10 @@ function Dashboard() {
         navigate('/upload_document')
     }
 
+    const calendar = () => {
+        navigate('/calendar')
+    }
+
     useEffect(() => {
         if(loading) return;
         if(!user) return navigate("/");
@@ -44,7 +48,9 @@ function Dashboard() {
                 <button className="dashboard__btn" onClick={navigateToUpload}>
                 Upload Documents
                 </button>
-                
+                <button className="dashboard__btn" onClick={calendar}>
+                    Calendar
+                </button>
             </div>
         </div>
     );
