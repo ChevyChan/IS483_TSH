@@ -46,6 +46,7 @@ class Purchase(db.Model):
             db.session.add(purchase_order)
             db.session.commit()
 
+            ## Put this complex MS
             # Read the purchase order data from the excel/PDF file uploaded to Firebase Storage - Retrieve Purchase Order to get the Purchase Order URL
             # Create a csv file for Delivery Order
             # Trigger create delivery order here using requests

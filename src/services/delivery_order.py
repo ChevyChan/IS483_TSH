@@ -25,17 +25,19 @@ class Delivery(db.Model):
     delivery_date = db.Column(db.String(50), nullable=True)
     delivery_time = db.Column(db.String(50), nullable=True)
     delivery_order_url = db.Column(db.String(15000))
-    bidding_uuid = db.Column(db.String(255))
+    delivery_status = db.Column(db.String(50), nullable=True)
+    bidding_uuid = db.Column(db.String(255), nullable=True)
 
-    def __init__(self, delivery_uuid, delivery_date, delivery_time, delivery_order_url, bidding_uuid):
+    def __init__(self, delivery_uuid, delivery_date, delivery_time, delivery_order_url, delivery_status, bidding_uuid):
         self.delivery_uuid = delivery_uuid
         self.delivery_date = delivery_date
         self.delivery_time = delivery_time
         self.delivery_order_url = delivery_order_url
+        self.delivery_status = delivery_status
         self.bidding_uuid = bidding_uuid
 
     def json(self):
-        return {"Delivery_uuid": self.delivery_uuid, "Delivery_date": self.delivery_date, "Delivery_time": self.delivery_time, "Delivery_Order_URL": self.delivery_order_url, "Bidding_uuid": self.bidding_uuid}
+        return {"Delivery_uuid": self.delivery_uuid, "Delivery_date": self.delivery_date, "Delivery_time": self.delivery_time, "Delivery_Order_URL": self.delivery_order_url, "Delivery_Status": self.delivery_status, "Bidding_uuid": self.bidding_uuid}
     
     # Delivery Order to be created automatically after purchase order have been created
     @app.route("/v1/delivery_order/create_delivery_order", methods=['POST'])
@@ -71,6 +73,7 @@ class Delivery(db.Model):
                             "Delivery_date": data["delivery_date"],
                             "Delivery_time": data["delivery_time"],
                             "Delivery_Order_URL": data["delivery_order_url"],
+                            "Delivery_Status": data["delivery_status"],
                             "Bidding_uuid": data["bidding_uuid"]
                         },
                         "message": "Delivery Order for " + data["delivery_uuid"] + " have been created." 
@@ -95,6 +98,10 @@ class Delivery(db.Model):
                         delivery_order.delivery_order_file_url = data["delivery_order_file_url"]
                     else:
                         delivery_order.delivery_order_file_url = delivery_order.delivery_order_file_url
+                    if data["delivery_status"]:
+                        delivery_order.delivery_status = data["delivery_status"]
+                    else:
+                        delivery_order.delivery_status = delivery_order.delivery_status
                     db.session.commit()
                     return jsonify(
                         {

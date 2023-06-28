@@ -19,7 +19,7 @@ db = SQLAlchemy(app)
 
 CORS(app)
 
-# Table for Delivery_Order 
+# Table for Purchase_Delivery Order
 class Purchase_Delivery(db.Model):
     __tablename__ = 'Purchase_Delivery'
     Purchase_Delivery_uuid = db.Column(db.String(255), nullable=False, primary_key=True)
@@ -81,7 +81,7 @@ class Purchase_Delivery(db.Model):
 
             return jsonify({
                 "code": 500,
-                "message": "bidding.py internal error: " + ex_str
+                "message": "purchase_delivery.py internal error: " + ex_str
             }), 500
 
     # Getting a collection of all the purchase_delivery_orders for tracking purposes.
@@ -115,7 +115,7 @@ class Purchase_Delivery(db.Model):
 
             return jsonify({
                 "code": 500,
-                "message": "delivery_order.py internal error: " + ex_str
+                "message": "purchase_delivery.py internal error: " + ex_str
             }), 500
 
     # Get a purchase_delivery_order by id
@@ -149,8 +149,8 @@ class Purchase_Delivery(db.Model):
 
             return jsonify({
                 "code": 500,
-                "message": "delivery_order.py internal error: " + ex_str
+                "message": "purchase_delivery.py internal error: " + ex_str
             }), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)

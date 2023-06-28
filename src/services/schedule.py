@@ -1,5 +1,4 @@
 ## This file is implemented for simulation purposes. 
-## This is a complex microservice
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -20,7 +19,22 @@ db = SQLAlchemy(app)
 
 CORS(app)
 
-# Table for Delivery_Order 
+# Table for Purchase_Delivery Order
+class Purchase_Delivery(db.Model):
+    __tablename__ = 'Purchase_Delivery'
+    Purchase_Delivery_uuid = db.Column(db.String(255), nullable=False, primary_key=True)
+    PurchaseUID = db.Column(db.String(255), nullable=False)
+    DeliveryUID = db.Column(db.String(255), nullable=False)
+
+    def __init__(self, Purchase_Delivery_uuid, PurchaseUID, DeliveryUID):
+        self.Purchase_Delivery_uuid = Purchase_Delivery_uuid
+        self.PurchaseUID = PurchaseUID
+        self.DeliveryUID = DeliveryUID
+
+    def json(self):
+        return {"Purchase_Delivery_uuid": self.Purchase_Delivery_uuid, "PurchaseUID": self.PurchaseUID, "DeliveryUID": self.DeliveryUID}
+
+# Table for Schedule 
 class Schedule(db.Model):
     __tablename__ = 'Schedule'
     schedule_uuid= db.Column(db.String(255), nullable=False, primary_key=True)
@@ -41,45 +55,62 @@ class Schedule(db.Model):
         self.delivery_uid = delivery_uid
 
     def json(self):
-        return {"schedule_uuid": self.schedule_uuid, "schedule_date": self.schedule_date, "schedule_time": self.schedule_time, "schedule_description": self.schedule_description, "priority_level": self.priority_level, "purchase_uid": self.purchase_uid, "delivery_uid": self.delivery_uid}
+        return {"schedule_uuid": self.schedule_uuid, "schedule_date": self.schedule_date, "schedule_time": self.schedule_time, 
+                "schedule_description": self.schedule_description, "priority_level": self.priority_level, "purchase_uid": self.purchase_uid, 
+                "delivery_uid": self.delivery_uid}
     
     # Purchase_Delivery_Order will be created automatically once delivery_order is created for the purchase order for tracking purposes.
-    @app.route("/v1/schedule/create_schedule/<string:purchase_uid>", methods=['POST'])
-    def create_schedule(purchase_uid):
+    @app.route("/v1/schedule/create_schedule/<string:purchase_uid>/<string:delivery_uid>", methods=['POST'])
+    def create_schedule(purchase_uid, delivery_uid):
         data = request.get_json()
 
-        scheduling_details = Schedule.query.filter_by(purchase_uid=purchase_uid).first()
+        scheduling_details = Schedule.query.filter_by(purchase_uid=purchase_uid, delivery_uid=delivery_uid).first()
+
+        # Check if both delivery order and purchase order are related and exist in the DB
+        purchase_delivery_details = Purchase_Delivery.query.filter_by(PurchaseUID=purchase_uid, DeliveryUID=delivery_uid).first()
 
         try:
-            if not scheduling_details:
-                Scheduling_UID = str(uuid.uuid4())
-                schedule_details = Schedule(Scheduling_UID, **data)
+            if purchase_delivery_details:
+                if not scheduling_details:
+                    Scheduling_UID = str(uuid.uuid4())
+                    schedule_details = Schedule(Scheduling_UID, **data)
 
-                db.session.add(schedule_details)
-                db.session.commit()
+                    db.session.add(schedule_details)
+                    db.session.commit()
 
-                return jsonify(
-                {
-                    "code": 200, 
-                    "data": {
-                        "Scheduling_UUID": Scheduling_UID,
-                        "PurchaseUID": purchase_uid,
-                        "DeliveryUID": delivery_uid,
-                    },
-                    "message": "Scheduling " + Scheduling_UID + " for Purchase Order " + purchase_uid + " have been created."
-                }
-            ),201
+                    return jsonify(
+                    {
+                        "code": 200, 
+                        "data": {
+                            "Scheduling_UUID": Scheduling_UID,
+                            "PurchaseUID": purchase_uid,
+                            "DeliveryUID": delivery_uid,
+                        },
+                        "message": "Scheduling " + Scheduling_UID + " for Purchase Order " + purchase_uid + " have been created."
+                    }
+                ),201
+                else:
+                    return jsonify(
+                    {
+                        "code": 400, 
+                        "data": {
+                            "PurchaseUID": purchase_uid,
+                            "DeliveryUID": delivery_uid,
+                        },
+                        "message": "Scheduling for Purchase UID: " + purchase_uid + " and Delivery UID: " + delivery_uid + " have already been created."
+                    }
+                ), 400
             else:
                 return jsonify(
-                {
-                    "code": 400, 
-                    "data": {
-                        "PurchaseUID": purchase_uid,
-                        "DeliveryUID": delivery_uid,
-                    },
-                    "message": "Scheduling for Purchase UID: " + purchase_uid + " and Delivery UID: " + delivery_uid + " have already been created."
-                }
-            ), 400
+                    {
+                        "code": 404, 
+                        "data": {
+                            "PurchaseUID": purchase_uid,
+                            "DeliveryUID": delivery_uid,
+                        },
+                        "message": "Purchase UID: " + purchase_uid + " and/or Delivery UID: " + delivery_uid + " does not match. Please verify and re-try again!"
+                    }
+                ), 400
         except Exception as e:
             # Unexpected error in code
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -94,7 +125,7 @@ class Schedule(db.Model):
             }), 500
 
     # Getting a collection of all the purchase_delivery_orders for tracking purposes.
-    @app.route("/v1/schedule/get_all_scheduling")
+    @app.route("/v1/schedule/get_all_schedule")
     def get_list_of_purchase_delivery_orders():
         scheduling_lists = Schedule.query.all()
         try:
