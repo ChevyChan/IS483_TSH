@@ -131,39 +131,84 @@ CORS(app)
 
 # print()
 
-# print("================== Invoking Purchase Delivery Microservice ====================")
+print("================== Invoking Purchase Delivery Microservice ====================")
+
+print()
+print("==================== Create a Purchase Delivery Order ======================")
+# #invoke Purchase Delivery Order microservice to create a Purchase Delivery Order
+# #purchase_delivery_order_uuid = str(uuid.uuid4())
+PurchaseUID = "0c4fdbe8-dc67-4f20-8849-83c96951dfe3"
+DeliveryUID = "1582aa22-8619-465c-aaad-ae20422a4e28"
+purchase_delivery_order_details = {}
+create_results = invoke_http("http://localhost:5001/v1/purchase_delivery/create_purchase_delivery_order/" + PurchaseUID + "/" + DeliveryUID, method='POST',
+                            json=purchase_delivery_order_details)
+
+print()
+print( create_results )
+print()
+
+print("==================== Getting all purchase_delivery_order ======================")
+#invoke bidding microservice to get all biddings
+results = invoke_http("http://localhost:5001/v1/purchase_delivery/get_all_purchase_delivery_orders", method='GET')
+
+print( type(results) )
+print()
+print( results )
+print()
+
+print("==================== Get selected purchase_delivery_order ======================")
+# invoke bidding microservice to get selected bidding
+purchase_delivery_order_uuid = '41e97efc-9842-4792-8b78-a9bbc7fc55bb'
+results = invoke_http("http://localhost:5001/v1/purchase_delivery/get_purchase_delivery_order_by_id/" + purchase_delivery_order_uuid, method='GET')
+
+print( type(results) )
+print()
+print( results )
+
+print()
+
+print("============================ End of Purchase Delivery Microservice =============================")
 
 # print()
 
-# print("==================== Create a Purchase Delivery Order ======================")
-# # #invoke Purchase Delivery Order microservice to create a Purchase Delivery Order
+# print("================== Invoking Schedule Microservice ====================")
+
+# print()
+
+# print("==================== Create a Schedule ======================")
+# # #invoke schedule microservice to create a schedule for delivery
 # # #purchase_delivery_order_uuid = str(uuid.uuid4())
 # PurchaseUID = "0c4fdbe8-dc67-4f20-8849-83c96951dfe3"
 # DeliveryUID = "1582aa22-8619-465c-aaad-ae20422a4e28"
-# purchase_delivery_order_details = {
-
-#                 }
-# create_results = invoke_http("http://localhost:5001/v1/purchase_delivery/create_purchase_delivery_order/" + PurchaseUID + "/" + DeliveryUID, method='POST',
-#                              json=purchase_delivery_order_details
+# scheduling_details = {
+#                     "schedule_date": "12-12-2024", 
+#                     "schedule_time": "12:00:00", 
+#                     "schedule_description": "Deliver to TSH Group", 
+#                     "priority_level": "Low", 
+#                     "purchase_uid": PurchaseUID, 
+#                     "delivery_uid": DeliveryUID
+#                     }
+# create_results = invoke_http("http://localhost:5001/v1/schedule/create_schedule/" + PurchaseUID + "/" + DeliveryUID, method='POST',
+#                              json=scheduling_details
 #                              )
 
 # print()
 # print( create_results )
 # print()
 
-# print("==================== Getting all purchase_delivery_order ======================")
-# #invoke bidding microservice to get all biddings
-# results = invoke_http("http://localhost:5001/v1/purchase_delivery/get_all_purchase_delivery_orders", method='GET')
+# print("==================== Getting all Schedules ======================")
+# #invoke schedule microservice to get all schedules
+# results = invoke_http("http://localhost:5001/v1/schedule/get_all_scheduling", method='GET')
 
 # print( type(results) )
 # print()
 # print( results )
 # print()
 
-# print("==================== Get selected purchase_delivery_order ======================")
-# # invoke bidding microservice to get selected bidding
-# purchase_delivery_order_uuid = 'd831d411-d467-4f40-a87b-27c732274577'
-# results = invoke_http("http://localhost:5001/v1/purchase_delivery/get_purchase_delivery_order_by_id/" + purchase_delivery_order_uuid, method='GET')
+# print("==================== Get selected Schedule ======================")
+# # invoke schedule microservice to get selected schedule
+# schedule_uuid = 'd831d411-d467-4f40-a87b-27c732274577'
+# results = invoke_http("http://localhost:5001/v1/schedule/get_schedule_by_id/" + schedule_uuid, method='GET')
 
 # print( type(results) )
 # print()
@@ -172,7 +217,7 @@ CORS(app)
 
 # print()
 
-# print("============================ End of Purchase Delivery Microservice =============================")
+# print("============================ End of Schedule Microservice =============================")
 
 # print()
 
@@ -180,23 +225,23 @@ CORS(app)
 
 # print()
 
-print("==================== Create a Bid ======================")
-# #invoke Bidding microservice to create a bid
-bidding_uuid = str(uuid.uuid4())
-bidding_details = {"bidding_uuid": bidding_uuid,
-                    "title": "Delivery to NUS",
-                    "description": "Testing",
-                    "bidding_date": "12-12-2023",
-                    "bidding_time": "12:00pm",
-                    "num_of_vehicles": 15
-                }
-create_results = invoke_http("http://localhost:5001/v1/bidding/create_bidding", method='POST',
-                             json=bidding_details
-                             )
+# print("==================== Create a Bid ======================")
+# # #invoke Bidding microservice to create a bid
+# bidding_uuid = str(uuid.uuid4())
+# bidding_details = {"bidding_uuid": bidding_uuid,
+#                     "title": "Delivery to NUS",
+#                     "description": "Testing",
+#                     "bidding_date": "12-12-2023",
+#                     "bidding_time": "12:00pm",
+#                     "num_of_vehicles": 15
+#                 }
+# create_results = invoke_http("http://localhost:5001/v1/bidding/create_bidding", method='POST',
+#                              json=bidding_details
+#                              )
 
-print()
-print( create_results )
-print()
+# print()
+# print( create_results )
+# print()
 
 # print("==================== Getting all biddings ======================")
 # #invoke bidding microservice to get all biddings

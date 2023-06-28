@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
-import requests
 import json 
 import uuid
 
@@ -47,7 +46,8 @@ class Purchase(db.Model):
             db.session.add(purchase_order)
             db.session.commit()
 
-            # Read the data from the excel/PDF file uploaded to Firebase Storage
+            # Read the purchase order data from the excel/PDF file uploaded to Firebase Storage - Retrieve Purchase Order to get the Purchase Order URL
+            # Create a csv file for Delivery Order
             # Trigger create delivery order here using requests
             ## Get the response of the delivery_uid
             # # result = requests.post("http://127.0.0.1:5001/v1/delivery_order/create_delivery_order")
