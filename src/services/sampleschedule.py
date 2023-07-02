@@ -3,7 +3,7 @@
 # Database tbc again
 
 availableVehicle = 12  # this is the default no. as per 3.3 https://docs.google.com/spreadsheets/d/1cJPvlwikNdK-L1NOOQnjlZrsX2pb-wTRb2WdoNIvTHs/edit#gid=0
-forecast = 13  # based on BA algo
+forecast = 13  # FORECAST: based on BA algo
 # we will then have to sync with schedule
 
 
@@ -11,9 +11,10 @@ def checkIfEnough():
     if (forecast <= 12):  # case1
         print("no need for bidding")
         # ***************************************************************************
-        # Generation of schedule logic AND for dashboard (Need UI)
+        # PLANNING: Generation of schedule logic (UI to see schedule) AND for dashboard UI AND UI to view report generated
         # BA input for calculation capacity n schedule for next week to "Query"
 
+        # CONFIRM: Delivery partner UI to CONFIRM
         # Tricky part where we have to query the Database and plan based on the empty slots/ time
 
         # ***************************************************************************
