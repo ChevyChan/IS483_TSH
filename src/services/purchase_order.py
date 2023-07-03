@@ -36,6 +36,19 @@ class Purchase(db.Model):
         return {"Purchase_uuid": self.purchase_uuid, "Purchase_date": self.purchase_date, "Purchase_Order_File_URL": self.purchase_order_file_url, "UserUID": self.UserUID}
     
     # The purchase order will be created by the user through the web portal or it will be simulated
+    ## Put this complex MS
+        # Read the purchase order data from the excel/PDF file uploaded to Firebase Storage - Retrieve Purchase Order to get the Purchase Order URL
+        # Create a csv file for Delivery Order
+        # Trigger create delivery order here using requests
+        ## Get the response of the delivery_uid
+        # # result = requests.post("http://127.0.0.1:5001/v1/delivery_order/create_delivery_order")
+        # Unpack the json result and retrieve the delivery uuid
+        # # delivery_order_result = json.loads(result)
+        # # delivery_uuid = delivery_order_result["delivery_uuid"]
+
+        # Use the PurchaseUID and DeliveryUID to create Purchase_Delivery Order
+        ## Parameters are to be filled up
+        ### purchase_delivery_result = requests.post("http://127.0.0.1:5001/v1/purchase_delivery/create_purchase_delivery_order/data["purchase_uuid"]/delivery_uuid")
     @app.route("/v1/purchase_order/create_purchase_order", methods=['POST'])
     def create_purchase_order():
         data = request.get_json()
@@ -45,20 +58,6 @@ class Purchase(db.Model):
         try:
             db.session.add(purchase_order)
             db.session.commit()
-
-            ## Put this complex MS
-            # Read the purchase order data from the excel/PDF file uploaded to Firebase Storage - Retrieve Purchase Order to get the Purchase Order URL
-            # Create a csv file for Delivery Order
-            # Trigger create delivery order here using requests
-            ## Get the response of the delivery_uid
-            # # result = requests.post("http://127.0.0.1:5001/v1/delivery_order/create_delivery_order")
-            # Unpack the json result and retrieve the delivery uuid
-            # # delivery_order_result = json.loads(result)
-            # # delivery_uuid = delivery_order_result["delivery_uuid"]
-
-            # Use the PurchaseUID and DeliveryUID to create Purchase_Delivery Order
-            ## Parameters are to be filled up
-            ### purchase_delivery_result = requests.post("http://127.0.0.1:5001/v1/purchase_delivery/create_purchase_delivery_order/data["purchase_uuid"]/delivery_uuid")
 
         except Exception as e:
             # Unexpected error in code

@@ -27,64 +27,78 @@ class Delivery(db.Model):
     delivery_order_url = db.Column(db.String(15000))
     delivery_status = db.Column(db.String(50), nullable=True)
     bidding_uuid = db.Column(db.String(255), nullable=True)
+    purchase_uuid = db.Column(db.String(255), nullable=True)
 
-    def __init__(self, delivery_uuid, delivery_date, delivery_time, delivery_order_url, delivery_status, bidding_uuid):
+    def __init__(self, delivery_uuid, delivery_date, delivery_time, delivery_order_url, delivery_status, bidding_uuid, purchase_uuid):
         self.delivery_uuid = delivery_uuid
         self.delivery_date = delivery_date
         self.delivery_time = delivery_time
         self.delivery_order_url = delivery_order_url
         self.delivery_status = delivery_status
         self.bidding_uuid = bidding_uuid
+        self.purchase_uuid = purchase_uuid
 
     def json(self):
-        return {"Delivery_uuid": self.delivery_uuid, "Delivery_date": self.delivery_date, "Delivery_time": self.delivery_time, "Delivery_Order_URL": self.delivery_order_url, "Delivery_Status": self.delivery_status, "Bidding_uuid": self.bidding_uuid}
+        return {"Delivery_uuid": self.delivery_uuid, "Delivery_date": self.delivery_date, "Delivery_time": self.delivery_time, 
+        "Delivery_Order_URL": self.delivery_order_url, "Delivery_Status": self.delivery_status, "Bidding_uuid": self.bidding_uuid, 
+        "Purchase_uuid": self.purchase_uuid}
     
     # Delivery Order to be created automatically after purchase order have been created
-    @app.route("/v1/delivery_order/create_delivery_order", methods=['POST'])
-    def create_delivery_order():
+    @app.route("/v1/delivery_order/create_delivery_order/<string:purchase_uuid>", methods=['POST'])
+    def create_delivery_order(purchase_uuid):
+
+        delivery_order = Delivery.query.filter_by(purchase_uuid=purchase_uuid).first()
+
         data = request.get_json()
         print(data)
 
-        if(data):
-            delivery_order = Delivery(**data)
+        if not delivery_order:
+            if(data):
+                delivery_order = Delivery(**data)
 
-            try:
-                db.session.add(delivery_order)
-                db.session.commit()
-            except Exception as e:
-                # Unexpected error in code
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                ex_str = str(e) + " at " + str(exc_type) + ": " + \
-                    fname + ": line " + str(exc_tb.tb_lineno)
-                print(ex_str)
+                try:
+                    db.session.add(delivery_order)
+                    db.session.commit()
+                except Exception as e:
+                    # Unexpected error in code
+                    exc_type, exc_obj, exc_tb = sys.exc_info()
+                    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                    ex_str = str(e) + " at " + str(exc_type) + ": " + \
+                        fname + ": line " + str(exc_tb.tb_lineno)
+                    print(ex_str)
 
-                return jsonify({
-                    "code": 500,
-                    "message": "delivery_order.py internal error: " + ex_str
-                }), 500
-            
-            return jsonify(
-                {
-                    "code": 200, 
-                    "data": {
+                    return jsonify({
+                        "code": 500,
+                        "message": "delivery_order.py internal error: " + ex_str
+                    }), 500
+                
+                return jsonify(
+                    {
+                        "code": 200, 
                         "data": {
-                            "Delivery_uuid": data["delivery_uuid"],
-                            "Delivery_date": data["delivery_date"],
-                            "Delivery_time": data["delivery_time"],
-                            "Delivery_Order_URL": data["delivery_order_url"],
-                            "Delivery_Status": data["delivery_status"],
-                            "Bidding_uuid": data["bidding_uuid"]
-                        },
-                        "message": "Delivery Order for " + data["delivery_uuid"] + " have been created." 
+                            "data": {
+                                "Delivery_uuid": data["delivery_uuid"],
+                                "Delivery_date": data["delivery_date"],
+                                "Delivery_time": data["delivery_time"],
+                                "Delivery_Order_URL": data["delivery_order_url"],
+                                "Delivery_Status": data["delivery_status"],
+                                "Bidding_uuid": data["bidding_uuid"],
+                                "Purchase_uuid": data["purchase_uuid"]
+                            },
+                            "message": "Delivery Order for purchase order " + data["purchase_uuid"] + " have been created." 
+                        }
                     }
-                }
-            ),201
+                ),201
+            else:
+                return jsonify({
+                    "code": 400,
+                    "message": "Invalid JSON input: " + str(request.get_data())
+                }), 400
         else:
             return jsonify({
                 "code": 400,
-                "message": "Invalid JSON input: " + str(request.get_data())
-            }), 400
+                "message": "Delivery Order for Purchase Order " + purchase_uuid + " have been created. Please verify."
+            })
 
     # Delivery Order to be updated based on the changes to the file contents that will be uploaded.
     @app.route("/v1/delivery_order/update_delivery_order/<string:delivery_uuid>", methods=["PUT"])

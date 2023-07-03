@@ -61,6 +61,7 @@ class Bidding_Offer(db.Model):
         return {"Bidding_Offer_uuid": self.bidding_offer_uuid, "Bid_Price": self.bid_price, "UserUID": self.UserUID, "BiddingUID": self.BiddingUID, "Bidding_Offer_Result": self.Bidding_Offer_Result}
     
     # A bidding offer will be created after the delivery partner has submitted their offer.
+    # An email will be sent to the delivery provider after an offer is submitted. 
     @app.route("/v1/bidding_offer/create_bidding_offer/<string:UserUID>/<string:bidding_uuid>", methods=['POST'])
     def create_bidding_offer(UserUID, bidding_uuid):
         data = request.get_json()

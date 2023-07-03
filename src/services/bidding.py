@@ -39,7 +39,8 @@ class Bidding(db.Model):
     def json(self):
         return {"Bidding_uuid": self.bidding_uuid, "Title": self.title, "Description": self.description, "Bidding_Date": self.bidding_date, "Bidding_Time": self.bidding_time, "Num_Of_Vehicles": self.num_of_vehicles}
     
-    # Create a bidding for delivery vehicles automatically based on the historical data during the beginning of the month.
+    # Create a bidding for delivery vehicles automatically in complex ms based on the data model during the beginning of the week if forecast > actual vehicles available.
+    # When a bidding is created, a mass email will be sent to the delivery providers to gather bidding input.
     @app.route("/v1/bidding/create_bidding", methods=['POST'])
     def create_bidding():
         data = request.get_json()
@@ -86,7 +87,7 @@ class Bidding(db.Model):
         
 
     # Update the bidding based on the date/time/number of delivery vehicles required.
-    # Every update, trigger an email notification notifying the delivery provider.
+    # Every update, trigger an email notification notifying the delivery provider in the complex ms.
     @app.route("/v1/bidding/update_bidding/<string:bidding_uuid>", methods=["PUT"])
     def update_bidding(bidding_uuid):
         bidding = Bidding.query.filter_by(bidding_uuid=bidding_uuid).first()
