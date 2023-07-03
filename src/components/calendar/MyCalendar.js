@@ -35,6 +35,8 @@ import classNames from 'clsx';
 import { priorities } from './tasks';
 import { data as tasks } from './grouping';
 
+//import handleAuthClick from '../../services/google_calendar.js';
+
 const grouping = [{
   resourceName: 'priorityId',
 }];
