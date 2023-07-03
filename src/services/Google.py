@@ -12,7 +12,7 @@ def Create_Service(client_secret_file, api_name, api_version, *scopes, prefix=''
 	CLIENT_SECRET_FILE = client_secret_file
 	API_SERVICE_NAME = api_name
 	API_VERSION = api_version
-	SCOPES = [scope for scope in scopes[0]]
+	SCOPES = [scope for scope in scopes]
 	
 	cred = None
 	working_dir = os.getcwd()

@@ -15,5 +15,5 @@ SCOPES = 'https://www.googleapis.com/auth/calendar'
 
 service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
 
-response = service.events().get(calendarId='primary', eventId='eventId').execute()
+response = service.calendars().get(calendarId='primary').execute()
 print(response)
