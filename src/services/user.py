@@ -24,21 +24,15 @@ class User(db.Model):
     email = db.Column(db.String(255), nullable=False)
     auth_provider = db.Column(db.String(255), nullable=False)
     member_type = db.Column(db.String(30))
-    company_name = db.Column(db.String(100))
-    company_address = db.Column(db.String(100))
-    company_contact = db.Column(db.String(50))
-    company_email = db.Column(db.String(100))
+    CompanyID = db.Column(db.Integer)
 
-    def __init__(self, user_uuid, name, email, auth_provider, member_type, company_name, company_address, company_contact, company_email):
+    def __init__(self, user_uuid, name, email, auth_provider, member_type, CompanyID):
         self.user_uuid = user_uuid
         self.name = name
         self.email = email
         self.auth_provider = auth_provider
         self.member_type = member_type
-        self.company_name = company_name
-        self.company_address = company_address
-        self.company_contact = company_contact
-        self.company_email = company_email
+        self.CompanyID = CompanyID
 
     def json(self):
         return {
@@ -47,10 +41,7 @@ class User(db.Model):
             "email": self.email,
             "auth_provider": self.auth_provider,
             "member_type": self.member_type,
-            "company_name": self.company_name,
-            "company_address": self.company_address,
-            "company_contact": self.company_contact,
-            "company_email": self.company_email
+            "CompanyID": self.CompanyID,
         }
 
 ################################
@@ -105,6 +96,13 @@ def create_user_by_user_uuid(user_uuid, email):
         if not user_details:
             db.session.add(user)
             db.session.commit()
+        else:
+            return jsonify(
+                {
+                    "code": 500,
+                    "message": "Email address have been used! Please try using another email address."
+                }
+            )
     except:
         return jsonify(
             {
@@ -184,11 +182,6 @@ def update_user_details(user_uuid):
 
     user.name = data["name"]
     user.email = data["email"]
-    user.member_type = data["member_type"]
-    user.company_name = data["company_name"]
-    user.company_address = data["company_address"]
-    user.company_contact = data["company_contact"]
-    user.company_email = data["company_email"]
 
     try:
         db.session.commit()

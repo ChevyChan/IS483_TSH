@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, update, onValue } from "firebase/database";
-import { OAuthProvider, GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "firebase/auth";
+import { OAuthProvider, GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged, getRedirectResult } from "firebase/auth";
 import { getFirestore, query, getDocs, collection, where, addDoc, getDoc, } from "firebase/firestore";
 import { getStorage } from 'firebase/storage';
 // TODO: Add SDKs for Firebase products that you want to use
@@ -38,13 +38,19 @@ export const signInWithGoogle = async() => {
         const user = res.user;
         const q = query(collection(db, "users"), where("uid", "==", user.uid));
         const docs = await getDocs(q);
+
+        const credentials = GoogleAuthProvider.credentialFromResult(res);
+        const token = credentials.accessToken;
+        console.log(credentials)
+
         if (docs.docs.length == 0) {
-            await addDoc(collection(db, "users"), {
-                uid: user.uid,
-                name: user.displayName,
-                authProvider: "google",
-                email: user.email,
-            });
+          await addDoc(collection(db, "users"), {
+            uid: user.uid,
+            name: user.displayName,
+            authProvider: "google",
+            email: user.email,
+            accessToken: token
+          }) 
         }
     }catch(err){
         console.error(err);

@@ -15,15 +15,12 @@ CORS(app)
 # print("==================== Create a User ======================")
 # #invoke Users microservice to create a user
 # user_uuid = str(uuid.uuid4())
-# email = "max@tongtah.com.sg"
-# user_details = {"name": "Max",
+# email = "john@tongtah.com.sg"
+# user_details = {"name": "John",
 #                 "email": email,
 #                 "auth_provider": "Google",
 #                 "member_type": "Employee",
-#                 "company_name": "Tong Tah",
-#                 "company_address": "123 Adam Rd #01-01",
-#                 "company_contact": "63219876",
-#                 "company_email": "support@tongtah.sg"
+#                 "CompanyID": 2
 #                 }
 # create_results = invoke_http("http://localhost:5001/v1/user/create_user/" + user_uuid + "/" + email, method='POST',
 #                              json=user_details
@@ -32,6 +29,47 @@ CORS(app)
 # print()
 # print( create_results )
 # print()
+
+# print("============================ End of User Microservice =============================")
+
+# print()
+
+print("================== Invoking Company Microservice ====================")
+
+print()
+
+# print("==================== Create a Company ======================")
+# #invoke Company microservice to create a company
+# company_uuid = str(uuid.uuid4())
+# company_email = "hello@tongtah.com.sg"
+# company_details = {
+#                 "company_id": company_uuid,
+#                 "company_name": "Tong Tah Pte Ltd",
+#                 "company_address": "1 Sims Ave #01-01, S(777777)",
+#                 "company_email": company_email,
+#                 "company_type": "Main"
+#                 }
+# create_results = invoke_http("http://localhost:5001/v1/company/create_company", method='POST',
+#                              json=company_details
+#                              )
+
+# print()
+# print( create_results )
+# print()
+
+print("==================== Get selected company details ======================")
+# invoke company microservice to get selected company details
+company_uuid = '42f6d251-131e-4765-8da1-874d6fb8eec0'
+results = invoke_http("http://localhost:5001/v1/company/get_company_by_id/" + company_uuid, method='GET')
+
+print( type(results) )
+print()
+print( results )
+print()
+
+print("============================ End of Company Microservice =============================")
+
+print()
 
 # print("================== Invoking Purchase Order Microservice ====================")
 
@@ -75,62 +113,62 @@ CORS(app)
 
 # print()
 
-print("================== Invoking Delivery Order Microservice ====================")
+# print("================== Invoking Delivery Order Microservice ====================")
 
-print()
+# print()
 
-print("==================== Create a Delivery Order ======================")
-# #invoke Delivery Order microservice to create a Delivery Order
-delivery_order_uuid = str(uuid.uuid4())
-purchase_uuid = "1"
-delivery_order_details = {"delivery_uuid": delivery_order_uuid,
-                    "delivery_date": str(datetime.now().date()),
-                    "delivery_time": "12:00pm",
-                    "delivery_order_url": "https://firebasestorage.googleapis.com/v0/b/is483-tsh.appspot.com/o/files%2F1_A%20Simple%20Five-Step%20Framework%20To%20Launching%20A%20Mobile%20App%20People%20Actually%20Want%20To%20Use.pdf?alt=media&token=acab169f-ac2d-4eb8-a53c-e086ce0f027a",
-                    "delivery_status": "Ready to Ship",
-                    "bidding_uuid": "3ef26090-8b4c-41af-ab38-5266e8aa728e",
-                    "purchase_uuid": "1"
-                }
-create_results = invoke_http("http://localhost:5001/v1/delivery_order/create_delivery_order/" + purchase_uuid, method='POST',
-                             json=delivery_order_details
-                             )
+# print("==================== Create a Delivery Order ======================")
+# # #invoke Delivery Order microservice to create a Delivery Order
+# delivery_order_uuid = str(uuid.uuid4())
+# purchase_uuid = "1"
+# delivery_order_details = {"delivery_uuid": delivery_order_uuid,
+#                     "delivery_date": str(datetime.now().date()),
+#                     "delivery_time": "12:00pm",
+#                     "delivery_order_url": "https://firebasestorage.googleapis.com/v0/b/is483-tsh.appspot.com/o/files%2F1_A%20Simple%20Five-Step%20Framework%20To%20Launching%20A%20Mobile%20App%20People%20Actually%20Want%20To%20Use.pdf?alt=media&token=acab169f-ac2d-4eb8-a53c-e086ce0f027a",
+#                     "delivery_status": "Ready to Ship",
+#                     "bidding_uuid": "3ef26090-8b4c-41af-ab38-5266e8aa728e",
+#                     "purchase_uuid": "1"
+#                 }
+# create_results = invoke_http("http://localhost:5001/v1/delivery_order/create_delivery_order/" + purchase_uuid, method='POST',
+#                              json=delivery_order_details
+#                              )
 
-print()
-print( create_results )
-print()
+# print()
+# print( create_results )
+# print()
 
-print("==================== Getting all delivery orders ======================")
-#invoke delivery order microservice to get all delivery order
-results = invoke_http("http://localhost:5001/v1/delivery_order/get_all_delivery_orders", method='GET')
+# print("==================== Getting all delivery orders ======================")
+# #invoke delivery order microservice to get all delivery order
+# results = invoke_http("http://localhost:5001/v1/delivery_order/get_all_delivery_orders", method='GET')
 
-print( type(results) )
-print()
-print( results )
-print()
+# print( type(results) )
+# print()
+# print( results )
+# print()
 
-print("==================== Get selected delivery order ======================")
-# invoke delivery order microservice to get selected delivery order
-delivery_order_uuid = 'daef193a-2db4-4d35-8ba6-76b106115586'
-results = invoke_http("http://localhost:5001/v1/delivery_order/get_delivery_order_by_id/" + delivery_order_uuid, method='GET')
+# print("==================== Get selected delivery order ======================")
+# # invoke delivery order microservice to get selected delivery order
+# delivery_order_uuid = 'daef193a-2db4-4d35-8ba6-76b106115586'
+# results = invoke_http("http://localhost:5001/v1/delivery_order/get_delivery_order_by_id/" + delivery_order_uuid, method='GET')
 
-print( type(results) )
-print()
-print( results )
-print()
+# print( type(results) )
+# print()
+# print( results )
+# print()
 
-print("==================== Update Delivery Order Contents ======================")
-# invoke delivery order microservice to update a delivery order
-delivery_order_uuid = 'daef193a-2db4-4d35-8ba6-76b106115586'
-delivery_order_details = { "delivery_order_file_url": "https://firebasestorage.googleapis.com/v0/b/is483-tsh.appspot.com/o/files%2F1_A%20Simple%20Five-Step%20Framework%20To%20Launching%20A%20Mobile%20App%20People%20Actually%20Want%20To%20Use.pdf?alt=media&token=acab169f-ac2d-4eb8-a53c-e086ce0f027a", "delivery_status": "Shipped"}
-create_results = invoke_http("http://localhost:5001/v1/delivery_order/update_delivery_order/" + delivery_order_uuid, method='PUT',
-                             json=delivery_order_details
-                             )
+# print("==================== Update Delivery Order Contents ======================")
+# # invoke delivery order microservice to update a delivery order
+# delivery_order_uuid = 'daef193a-2db4-4d35-8ba6-76b106115586'
+# delivery_order_details = { "delivery_order_file_url": "https://firebasestorage.googleapis.com/v0/b/is483-tsh.appspot.com/o/files%2F1_A%20Simple%20Five-Step%20Framework%20To%20Launching%20A%20Mobile%20App%20People%20Actually%20Want%20To%20Use.pdf?alt=media&token=acab169f-ac2d-4eb8-a53c-e086ce0f027a", "delivery_status": "Shipped"}
+# create_results = invoke_http("http://localhost:5001/v1/delivery_order/update_delivery_order/" + delivery_order_uuid, method='PUT',
+#                              json=delivery_order_details
+#                              )
 
-print()
-print( create_results )
-print()
+# print()
+# print( create_results )
+# print()
 
-print("============================ End of Delivery Order Microservice =============================")
+# print("============================ End of Delivery Order Microservice =============================")
 
 # print()
 

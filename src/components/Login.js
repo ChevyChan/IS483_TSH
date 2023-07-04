@@ -5,6 +5,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 import '../Login.css';
 import axios, { HttpStatusCode } from 'axios';
+import { connectStorageEmulator } from "firebase/storage";
 
 function Login() {
     const [email, setEmail] = useState("");
@@ -18,36 +19,60 @@ function Login() {
         return;
       }
       // 2 types of user: Employees and Delivery Partners
+      // Check for email address. E.g., "@ninjavan.com.sg". Otherwise, set a default group for other generic email addresses
       if (user) {
-        fetch('http://localhost:5001/v1/user/create_user/' + user.uid + '/' + user.email, {
-          method: 'POST',
+        fetch('http://localhost:5001/v1/user/get_user_by_id/'+ user.uid, {
+          method: 'GET',
+          mode: "no-cors",
           headers: {
             'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: user.displayName,
-            email: user.email,
-            auth_provider: user.providerData[0].providerId,
-            member_type: "Employee",
-            "company_name": "Tong Tah",
-            "company_address": "123 Adam Rd #01-01",
-            "company_contact": "63219876",
-            "company_email": "support@tongtah.sg"
-          })
+          }
         })
-          .then(response => {
-            if(!HttpStatusCode.Ok){ 
-              throw new Error('Bad Request');
-            }
+        .then(response => {
+          if(!HttpStatusCode.Ok){
+            throw new Error('Bad Request');
+          }
+        })
+        .then(data => {
+          console.log(data)
+
+          if(data == null){
+            fetch('http://localhost:5001/v1/user/create_user/' + user.uid + '/' + user.email, {
+            method: 'POST',
+            mode: "no-cors",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user_uuid: user.uid,
+              name: user.displayName,
+              email: user.email,
+              auth_provider: user.providerData[0].providerId,
+              // Either Employee or Delivery Partner. To be replaced later
+              member_type: "Employee",
+              CompanyID: "1",
+            })
           })
-          .then(data => {
-            // Handle the response data
-            console.log(data);
-          })
-          .catch(error => {
-            //Handle any errors
-            console.error(error);
-          })
+            .then(response => {
+              if(!HttpStatusCode.Ok){ 
+                throw new Error('Bad Request');
+              }
+            })
+            .then(data => {
+              // Handle the response data
+              console.log(data);
+            })
+            .catch(error => {
+              //Handle any errors
+              console.error(error);
+            })
+          }else{
+            return
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
 
         navigate("/dashboard");
       }
