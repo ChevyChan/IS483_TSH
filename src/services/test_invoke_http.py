@@ -34,9 +34,9 @@ CORS(app)
 
 # print()
 
-print("================== Invoking Company Microservice ====================")
+# print("================== Invoking Company Microservice ====================")
 
-print()
+# print()
 
 # print("==================== Create a Company ======================")
 # #invoke Company microservice to create a company
@@ -57,19 +57,19 @@ print()
 # print( create_results )
 # print()
 
-print("==================== Get selected company details ======================")
-# invoke company microservice to get selected company details
-company_uuid = '42f6d251-131e-4765-8da1-874d6fb8eec0'
-results = invoke_http("http://localhost:5001/v1/company/get_company_by_id/" + company_uuid, method='GET')
+# print("==================== Get selected company details ======================")
+# # invoke company microservice to get selected company details
+# company_uuid = '42f6d251-131e-4765-8da1-874d6fb8eec0'
+# results = invoke_http("http://localhost:5001/v1/company/get_company_by_id/" + company_uuid, method='GET')
 
-print( type(results) )
-print()
-print( results )
-print()
+# print( type(results) )
+# print()
+# print( results )
+# print()
 
-print("============================ End of Company Microservice =============================")
+# print("============================ End of Company Microservice =============================")
 
-print()
+# print()
 
 # print("================== Invoking Purchase Order Microservice ====================")
 
@@ -280,7 +280,6 @@ print()
 
 
 # print()
-
 
 
 # print("================== Invoking Bidding Offer Microservice ====================")
