@@ -55,8 +55,9 @@ class Schedule(db.Model):
                 "schedule_start_date": self.schedule_start_date, "schedule_start_time": self.schedule_start_time, "schedule_end_date": self.schedule_end_date, "schedule_end_time": self.schedule_end_time,
                 "schedule_from_location": self.schedule_from_location, "schedule_to_location": self.schedule_to_location, "priority_level": self.priority_level, "calendar_uuid": self.calendar_uuid}
     
-    # In complex ms, retrieve the details from Delivery_Order MS, trigger create_schedule function, then update delivery order with the scheduled date and time for delivery
-    # Delivery Order will be updated with the delivery date and time once scheduling have been trigger with the relevant information generated.
+    # 1. In Complex MS, retrieve the details from Delivery_Order MS, trigger create_schedule function, then update delivery order with the scheduled date and time for delivery
+    # 2. Delivery Order will be updated with the delivery date and time once scheduling have been trigger with the relevant information generated.
+    # 3. After the delivery order has been updated with the date and time, create an event in the google calendar synchronously and display on the calendar UI
     @app.route("/v1/schedule/create_schedule/<string:purchase_uid>/<string:delivery_uid>", methods=['POST'])
     def create_schedule(purchase_uid, delivery_uid):
         data = request.get_json()
@@ -104,7 +105,7 @@ class Schedule(db.Model):
                 "message": "bidding.py internal error: " + ex_str
             }), 500
 
-    # Getting a collection of all the purchase_delivery_orders for tracking purposes.
+    # Getting a collection of all the scheduled orders for tracking purposes.
     @app.route("/v1/schedule/get_all_schedule")
     def get_list_of_purchase_delivery_orders():
         scheduling_lists = Schedule.query.all()
@@ -138,7 +139,7 @@ class Schedule(db.Model):
                 "message": "schedule.py internal error: " + ex_str
             }), 500
 
-    # Get a purchase_delivery_order by id
+    # Get a schedule by id
     @app.route("/v1/schedule/get_schedule_by_id/<string:purchase_uid>/<string:delivery_uid>")
     def find_schedule_by_id(purchase_uid, delivery_uid):
         schedule = Schedule.query.filter_by(purchase_uid=purchase_uid, delivery_uid=delivery_uid).first()

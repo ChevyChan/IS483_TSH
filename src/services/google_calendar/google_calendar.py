@@ -31,22 +31,23 @@ def retrieveEventsFromCalendar(calendarId):
     if not page_token:
       break
 
-event = {
-  'summary': 'Google I/O 2015',
-  'location': '800 Howard St., San Francisco, CA 94103',
-  'description': 'A chance to hear more about Google\'s developer products.',
-  'start': {
-    'dateTime': '2023-12-28T09:00:00-07:00',
-    'timeZone': 'Singapore',
-  },
-  'end': {
-    'dateTime': '2023-12-28T17:00:00-07:00',
-    'timeZone': 'Singapore',
-  }
-}
-
 # Adding events to Google Calendar
 def addEventsToCalendar(calendarId):
+  # Replace this event details to scheduling details and POST to google calendar and sync with DB to display at Calendar UI
+  event = {
+    'summary': 'Google I/O 2015',
+    'location': '800 Howard St., San Francisco, CA 94103',
+    'description': 'A chance to hear more about Google\'s developer products.',
+    'start': {
+      'dateTime': '2023-12-28T09:00:00-07:00',
+      'timeZone': 'Singapore',
+    },
+    'end': {
+      'dateTime': '2023-12-28T17:00:00-07:00',
+      'timeZone': 'Singapore',
+    }
+  }
+
   event_details = service.events().insert(calendarId=calendarId, body=event).execute()
   print('Event Created: ' + event_details['summary'])
 

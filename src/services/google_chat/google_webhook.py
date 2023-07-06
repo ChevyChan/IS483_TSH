@@ -16,20 +16,22 @@ from pprint import pprint
 
 import requests
 from requests.models import Response
+import pickle
+
+result = pickle.load(open("./token files/token_calendar_v3.pickle","rb"))
+print(result.token)
 
 # You need to pass WEBHOOK_URL as an environment variable.
-os.environ['WEBHOOK_URL'] = 'https://chat.googleapis.com/v1/spaces/AAAAouZ1mcE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=VEkYMmaf6DpFJHNGYIskysTgeBofjelPhlk_JO5kltw'
-
+os.environ['WEBHOOK_URL'] = 'https://chat.googleapis.com/v1/spaces/AAAAdOUcFZM/messages?key=AIzaSyCeJEuM7GE3kTwgZda9ppRZjLxcDreNXIY&token='+result.token
 WEBHOOK_URL = os.environ['WEBHOOK_URL']
 
-
 def main():
-    res = send_text(text='Hello!')
-    # res = send_text_card(
-    #     text='Hey!',
-    #     subtitle='You!',
-    #     paragraph='<b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font>',
-    # )
+    # res = send_text(text='Hello!')
+    res = send_text_card(
+        text='Hey!',
+        subtitle='You!',
+        paragraph='<b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font>',
+    )
     pprint(res.json())
     pass
 

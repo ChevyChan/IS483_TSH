@@ -378,7 +378,7 @@ const FlexibleSpace = (({
   </StyledToolbarFlexibleSpace>
 ));
 
-// Modify this code by adding the function view and update 
+// Modify this code by adding the function view data from Google Calendar only
 const TooltipContent = ({
   appointmentData, formatDate, appointmentResources,
 }) => {
