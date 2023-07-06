@@ -24,25 +24,36 @@ class Schedule(db.Model):
     __tablename__ = 'Schedule'
     purchase_uid = db.Column(db.String(255), nullable=False, primary_key=True)
     delivery_uid = db.Column(db.String(255), nullable=False, primary_key=True)
-    schedule_date = db.Column(db.String(50), nullable=False)
-    schedule_time = db.Column(db.String(50), nullable=False)
+    schedule_summary = db.Column(db.String(255), nullable=False)
+    schedule_description = db.Column(db.String(255), nullable=False)
+    schedule_start_date = db.Column(db.String(50), nullable=False)
+    schedule_start_time = db.Column(db.String(50), nullable=False)
+    schedule_end_date = db.Column(db.String(50), nullable=False)
+    schedule_end_time = db.Column(db.String(50), nullable=False)
     schedule_from_location = db.Column(db.String(255), nullable=False)
     schedule_to_location = db.Column(db.String(255), nullable=False)
     priority_level = db.Column(db.String(50), nullable=False)
+    calendar_uuid = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, purchase_uid, delivery_uid, schedule_date, schedule_time, schedule_from_location, schedule_to_location, priority_level):
+    def __init__(self, purchase_uid, delivery_uid, schedule_summary, schedule_description, schedule_start_date, schedule_start_time, schedule_end_date, schedule_end_time, schedule_from_location, schedule_to_location, priority_level, calendar_uuid):
         self.purchase_uid = purchase_uid
         self.delivery_uid = delivery_uid
-        self.schedule_date = schedule_date
-        self.schedule_time = schedule_time
+        self.schedule_summary = schedule_summary
+        self.schedule_description = schedule_description
+        self.schedule_start_date = schedule_start_date
+        self.schedule_start_time = schedule_start_time
+        self.schedule_end_date = schedule_end_date
+        self.schedule_end_time = schedule_end_time
         self.schedule_from_location = schedule_from_location
         self.schedule_to_location = schedule_to_location
         self.priority_level = priority_level
+        self.calendar_uuid = calendar_uuid
 
 
     def json(self):
-        return {"purchase_uid": self.purchase_uid, "delivery_uid": self.delivery_uid, "schedule_date": self.schedule_date, "schedule_time": self.schedule_time, 
-                "schedule_from_location": self.schedule_from_location, "schedule_to_location": self.schedule_to_location, "priority_level": self.priority_level}
+        return {"purchase_uid": self.purchase_uid, "delivery_uid": self.delivery_uid, "schedule_summary": self.schedule_summary, "schedule_description": self. schedule_description, 
+                "schedule_start_date": self.schedule_start_date, "schedule_start_time": self.schedule_start_time, "schedule_end_date": self.schedule_end_date, "schedule_end_time": self.schedule_end_time,
+                "schedule_from_location": self.schedule_from_location, "schedule_to_location": self.schedule_to_location, "priority_level": self.priority_level, "calendar_uuid": self.calendar_uuid}
     
     # In complex ms, retrieve the details from Delivery_Order MS, trigger create_schedule function, then update delivery order with the scheduled date and time for delivery
     # Delivery Order will be updated with the delivery date and time once scheduling have been trigger with the relevant information generated.

@@ -181,12 +181,18 @@ print("==================== Create a Schedule ======================")
 # #purchase_delivery_order_uuid = str(uuid.uuid4())
 PurchaseUID = "1"
 DeliveryUID = "3da304f1-8788-43f8-9ce2-f7856ebd274f"
+calendar_uuid = "045d064e-a770-41a8-b23f-14b8c01d0cd5"
 scheduling_details = {
-                    "schedule_date": str(datetime.now().date()), 
-                    "schedule_time": str(datetime.now().time()),
+                    "schedule_summary": "Delivery Order - TSH Group", 
+                    "schedule_description": "Testing for Delivery Order Scheduling",
+                    "schedule_start_date": str(datetime.now().date()), 
+                    "schedule_start_time": str(datetime.now().time()),
+                    "schedule_end_date": str(datetime.now().date()), 
+                    "schedule_end_time": str(datetime.now().time()),
                     "schedule_from_location": "6 Sim Drive", 
                     "schedule_to_location": "100 Hospital Way", 
-                    "priority_level": "Low", 
+                    "priority_level": "Low",
+                    "calendar_uuid": calendar_uuid, 
                     "purchase_uid": PurchaseUID, 
                     "delivery_uid": DeliveryUID
                     }

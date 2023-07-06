@@ -47,8 +47,8 @@ event = {
 
 # Adding events to Google Calendar
 def addEventsToCalendar(calendarId):
-  service.events().insert(calendarId=calendarId, body=event).execute()
-  print('Event Created: %s' % (event.get('htmlLink')))
+  event_details = service.events().insert(calendarId=calendarId, body=event).execute()
+  print('Event Created: ' + event_details['summary'])
 
 # Updating Events in Google Calendar
 def updateEventInCalendar(eventId):
