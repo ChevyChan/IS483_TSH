@@ -26,21 +26,23 @@ class Schedule(db.Model):
     delivery_uid = db.Column(db.String(255), nullable=False, primary_key=True)
     schedule_date = db.Column(db.String(50), nullable=False)
     schedule_time = db.Column(db.String(50), nullable=False)
-    schedule_description = db.Column(db.String(255), nullable=False)
+    schedule_from_location = db.Column(db.String(255), nullable=False)
+    schedule_to_location = db.Column(db.String(255), nullable=False)
     priority_level = db.Column(db.String(50), nullable=False)
 
-    def __init__(self, purchase_uid, delivery_uid, schedule_date, schedule_time, schedule_description, priority_level):
+    def __init__(self, purchase_uid, delivery_uid, schedule_date, schedule_time, schedule_from_location, schedule_to_location, priority_level):
         self.purchase_uid = purchase_uid
         self.delivery_uid = delivery_uid
         self.schedule_date = schedule_date
         self.schedule_time = schedule_time
-        self.schedule_description = schedule_description
+        self.schedule_from_location = schedule_from_location
+        self.schedule_to_location = schedule_to_location
         self.priority_level = priority_level
 
 
     def json(self):
         return {"purchase_uid": self.purchase_uid, "delivery_uid": self.delivery_uid, "schedule_date": self.schedule_date, "schedule_time": self.schedule_time, 
-                "schedule_description": self.schedule_description, "priority_level": self.priority_level}
+                "schedule_from_location": self.schedule_from_location, "schedule_to_location": self.schedule_to_location, "priority_level": self.priority_level}
     
     # In complex ms, retrieve the details from Delivery_Order MS, trigger create_schedule function, then update delivery order with the scheduled date and time for delivery
     # Delivery Order will be updated with the delivery date and time once scheduling have been trigger with the relevant information generated.

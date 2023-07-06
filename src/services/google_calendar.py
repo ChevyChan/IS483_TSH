@@ -31,11 +31,41 @@ def retrieveEventsFromCalendar(calendarId):
     if not page_token:
       break
 
+event = {
+  'summary': 'Google I/O 2015',
+  'location': '800 Howard St., San Francisco, CA 94103',
+  'description': 'A chance to hear more about Google\'s developer products.',
+  'start': {
+    'dateTime': '2023-12-28T09:00:00-07:00',
+    'timeZone': 'Singapore',
+  },
+  'end': {
+    'dateTime': '2023-12-28T17:00:00-07:00',
+    'timeZone': 'Singapore',
+  }
+}
+
+# Adding events to Google Calendar
+def addEventsToCalendar(calendarId):
+  service.events().insert(calendarId=calendarId, body=event).execute()
+  print('Event Created: %s' % (event.get('htmlLink')))
+
+# Updating Events in Google Calendar
+def updateEventInCalendar(eventId):
+  event = service.events().get(calendarId='primary', eventId=eventId).execute()
+  
+  event['summary'] = "Delivery to SGH"
+
+  updatedEvent = service.events().update(calendarId='primary', eventId=event['id'], body=event).execute()
+
+  print(updatedEvent)
+
+
 # Retrieve all tasks from current date onwards and store in the Tasks database
 # def pushTasksFromGoogle():
 #   tasks_result = Calendar_Tasks.get_list_of_calendars_tasks()
 #   print(tasks_result)
 
-retrieveEventsFromCalendar('primary')
+addEventsToCalendar('primary')
 
 

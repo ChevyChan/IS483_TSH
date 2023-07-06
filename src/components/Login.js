@@ -36,6 +36,12 @@ function Login() {
         .then(data => {
           console.log(data)
 
+          // Check for company details using email address used
+          // Create new company details if not found in database
+            // If SMU account, make it as "Developer" role
+            // If under TSH, make it as "Main" role 
+              // After checking the role and creating the company details, assign the roles to the JSON.stringify below.
+
           if(data == null){
             fetch('http://localhost:5001/v1/user/create_user/' + user.uid + '/' + user.email, {
             method: 'POST',

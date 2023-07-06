@@ -377,6 +377,8 @@ const FlexibleSpace = (({
     <PrioritySelector priority={priority} priorityChange={priorityChange} />
   </StyledToolbarFlexibleSpace>
 ));
+
+// Modify this code by adding the function view and update 
 const TooltipContent = ({
   appointmentData, formatDate, appointmentResources,
 }) => {
@@ -441,6 +443,7 @@ export default class Demo extends React.PureComponent {
     this.state = {
       currentDate: '2018-05-28',
       currentViewName: 'Day',
+      // Update 'tasks' attribute by linking with google events
       data: tasks,
       currentPriority: 0,
       resources: [{
