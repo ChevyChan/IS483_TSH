@@ -10,7 +10,7 @@ from Google import Create_Service
 CLIENT_SECRET_FILE = 'credentials.json'
 API_NAME = 'chat'
 API_VERSION='v1'
-SCOPES = 'https://www.googleapis.com/auth/chat.memberships.app'
+SCOPES = 'https://www.googleapis.com/auth/chat.memberships'
 
 service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
 
