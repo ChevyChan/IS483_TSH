@@ -4,6 +4,7 @@ from flask_cors import CORS
 
 from pprint import pprint
 from Google import Create_Service
+import socket
 
 from calendar_tasks import *
 
@@ -17,6 +18,8 @@ SCOPES = 'https://www.googleapis.com/auth/calendar'
 
 service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
 
+socket.setdefaulttimeout(10000)
+
 @app.route("/v1/google_calendar/retrieve_default_calendar")
 def retrievePrimaryCalendar():
   response = service.calendarList().get(calendarId='primary').execute()
@@ -27,7 +30,7 @@ def retrievePrimaryCalendar():
 def retrieveEventsFromCalendar(calendarId):
   page_token = None
   while True:
-    events = service.events().list(calendarId=calendarId, pageToken=page_token, timeMin='2023-05-01T00:00:00-07:00').execute()
+    events = service.events().list(calendarId=calendarId, pageToken=page_token, timeMin='2023-05-01T00:00:00-07:00', timeMax='2023-12-31T23:59:00-23:59').execute()
     for event in events['items']:
       print(event['summary'])
       return event
@@ -56,7 +59,7 @@ def addEventsToCalendar(calendarId, summary, location, description, startTime, e
 
   event_details = service.events().insert(calendarId=calendarId, body=event).execute()
   print('Event Created: ' + event_details['summary'])
-  return event_details
+  return 'Event Created: ' + event_details['summary']
 
 @app.route("/v1/google_calendar/update_calendar_event", methods=['PUT'])
 # Updating Events in Google Calendar

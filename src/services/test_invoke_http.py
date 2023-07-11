@@ -172,61 +172,61 @@ CORS(app)
 
 # print()
 
-print("================== Invoking Schedule Microservice ====================")
-
-print()
-
-# print("==================== Create a Schedule ======================")
-# # #invoke schedule microservice to create a schedule for delivery
-# # #purchase_delivery_order_uuid = str(uuid.uuid4())
-# PurchaseUID = "1"
-# DeliveryUID = "3da304f1-8788-43f8-9ce2-f7856ebd274f"
-# calendar_uuid = "045d064e-a770-41a8-b23f-14b8c01d0cd5"
-# scheduling_details = {
-#                     "schedule_summary": "Delivery Order - TSH Group", 
-#                     "schedule_description": "Testing for Delivery Order Scheduling",
-#                     "schedule_start_date": str(datetime.now().date()), 
-#                     "schedule_start_time": str(datetime.now().time()),
-#                     "schedule_end_date": str(datetime.now().date()), 
-#                     "schedule_end_time": str(datetime.now().time()),
-#                     "schedule_from_location": "6 Sim Drive", 
-#                     "schedule_to_location": "100 Hospital Way", 
-#                     "priority_level": "Low",
-#                     "calendar_uuid": calendar_uuid, 
-#                     "purchase_uid": PurchaseUID, 
-#                     "delivery_uid": DeliveryUID
-#                     }
-# create_results = invoke_http("http://localhost:5001/v1/schedule/create_schedule/" + PurchaseUID + "/" + DeliveryUID, method='POST',
-#                              json=scheduling_details
-#                              )
+# print("================== Invoking Schedule Microservice ====================")
 
 # print()
-# print( create_results )
-# print()
 
-print("==================== Getting all Schedules ======================")
-#invoke schedule microservice to get all schedules
-results = invoke_http("http://localhost:5001/v1/schedule/get_all_schedule", method='GET')
+# # print("==================== Create a Schedule ======================")
+# # # #invoke schedule microservice to create a schedule for delivery
+# # # #purchase_delivery_order_uuid = str(uuid.uuid4())
+# # PurchaseUID = "1"
+# # DeliveryUID = "3da304f1-8788-43f8-9ce2-f7856ebd274f"
+# # calendar_uuid = "045d064e-a770-41a8-b23f-14b8c01d0cd5"
+# # scheduling_details = {
+# #                     "schedule_summary": "Delivery Order - TSH Group", 
+# #                     "schedule_description": "Testing for Delivery Order Scheduling",
+# #                     "schedule_start_date": str(datetime.now().date()), 
+# #                     "schedule_start_time": str(datetime.now().time()),
+# #                     "schedule_end_date": str(datetime.now().date()), 
+# #                     "schedule_end_time": str(datetime.now().time()),
+# #                     "schedule_from_location": "6 Sim Drive", 
+# #                     "schedule_to_location": "100 Hospital Way", 
+# #                     "priority_level": "Low",
+# #                     "calendar_uuid": calendar_uuid, 
+# #                     "purchase_uid": PurchaseUID, 
+# #                     "delivery_uid": DeliveryUID
+# #                     }
+# # create_results = invoke_http("http://localhost:5001/v1/schedule/create_schedule/" + PurchaseUID + "/" + DeliveryUID, method='POST',
+# #                              json=scheduling_details
+# #                              )
 
-print( type(results) )
-print()
-print( results )
-print()
+# # print()
+# # print( create_results )
+# # print()
 
-# print("==================== Get selected Schedule ======================")
-# # invoke schedule microservice to get selected schedule
-# purchase_uid = '0c4fdbe8-dc67-4f20-8849-83c96951dfe3'
-# delivery_uid = '1582aa22-8619-465c-aaad-ae20422a4e28'
-# results = invoke_http("http://localhost:5001/v1/schedule/get_schedule_by_id/" + purchase_uid + "/" + delivery_uid, method='GET')
+# print("==================== Getting all Schedules ======================")
+# #invoke schedule microservice to get all schedules
+# results = invoke_http("http://localhost:5001/v1/schedule/get_all_schedule", method='GET')
 
 # print( type(results) )
 # print()
 # print( results )
 # print()
 
-# print()
+# # print("==================== Get selected Schedule ======================")
+# # # invoke schedule microservice to get selected schedule
+# # purchase_uid = '0c4fdbe8-dc67-4f20-8849-83c96951dfe3'
+# # delivery_uid = '1582aa22-8619-465c-aaad-ae20422a4e28'
+# # results = invoke_http("http://localhost:5001/v1/schedule/get_schedule_by_id/" + purchase_uid + "/" + delivery_uid, method='GET')
 
-print("============================ End of Schedule Microservice =============================")
+# # print( type(results) )
+# # print()
+# # print( results )
+# # print()
+
+# # print()
+
+# print("============================ End of Schedule Microservice =============================")
 
 # print()
 
@@ -416,49 +416,50 @@ print()
 
 # print()
 
-# print("================== Invoking Calendar Tasks Microservice ====================")
+print("================== Invoking Calendar Tasks Microservice ====================")
 
-# print()
+print()
 
-# print("==================== Create a Calendar Tasks ======================")
-# # #invoke Calendar Tasks microservice to create a Calendar Tasks
-# purchase_uuid = "0c4fdbe8-dc67-4f20-8849-83c96951dfe3"
-# delivery_uuid = "1582aa22-8619-465c-aaad-ae20422a4e28"
-# calendar_details = {
-#                     "task_name": "Create Delivery Order for TSH Group", 
-#                     "task_date": str(datetime.now().date()), 
-#                     "task_time": str(datetime.now().time()), 
-#                     "task_description": "Context will be: Delivery 3 goods to TSH Group. Contact Mr Max",
-#                     "task_completed": "Pending", 
-#                     "user_uid": "879067b9-1faa-4fdf-bd05-918b162f2c55", 
-#                     "calendar_uid": "045d064e-a770-41a8-b23f-14b8c01d0cd5"
-#                 }
-# create_results = invoke_http("http://localhost:5001/v1/calendar_tasks/create_calendar_task", method='POST',
-#                              json=calendar_details
-#                              )
+print("==================== Create a Calendar Tasks ======================")
+# #invoke Calendar Tasks microservice to create a Calendar Tasks
+purchase_uuid = "0c4fdbe8-dc67-4f20-8849-83c96951dfe3"
+delivery_uuid = "1582aa22-8619-465c-aaad-ae20422a4e28"
+calendar_details = {
+                    "task_name": "Create Delivery Order for TSH Group", 
+                    "task_date": str(datetime.now().date()), 
+                    "task_time": str(datetime.now().time()), 
+                    "task_description": "Context will be: Delivery 3 goods to TSH Group. Contact Mr Max",
+                    "priority_level": "1",
+                    "task_completed": "Pending", 
+                    "user_uid": "879067b9-1faa-4fdf-bd05-918b162f2c55", 
+                    "calendar_uid": "045d064e-a770-41a8-b23f-14b8c01d0cd5"
+                }
+create_results = invoke_http("http://localhost:5001/v1/calendar_tasks/create_calendar_task", method='POST',
+                             json=calendar_details
+                             )
 
-# print()
-# print( create_results )
-# print()
+print()
+print( create_results )
+print()
 
-# print("==================== Getting all Calendar Tasks ======================")
-# #invoke Calendar Tasks microservice to get all Calendar Tasks
-# results = invoke_http("http://localhost:5001/v1/calendar_tasks/get_all_calendar_tasks", method='GET')
+print("==================== Getting all Calendar Tasks ======================")
+#invoke Calendar Tasks microservice to get all Calendar Tasks
+results = invoke_http("http://localhost:5001/v1/calendar_tasks/get_all_calendar_tasks", method='GET')
 
-# print( type(results) )
-# print()
-# print( results )
-# print()
+print( type(results) )
+print()
+print( results )
+print()
 
-# print("==================== Get selected Calendar Tasks ======================")
-# # invoke Calendar Tasks microservice to get selected Calendar Tasks
-# calendar_task_id = 'ad63d6f7-fd4c-4465-bc3f-1605b55d3c68'
-# results = invoke_http("http://localhost:5001/v1/calendar_tasks/get_calendar_tasks_by_id/" + calendar_task_id, method='GET')
+print("==================== Get selected Calendar Tasks ======================")
+# invoke Calendar Tasks microservice to get selected Calendar Tasks
+calendar_task_id = 'ad63d6f7-fd4c-4465-bc3f-1605b55d3c68'
+results = invoke_http("http://localhost:5001/v1/calendar_tasks/get_calendar_tasks_by_id/" + calendar_task_id, method='GET')
 
-# print( type(results) )
-# print()
-# print( results )
-# print()
+print( type(results) )
+print()
+print( results )
+print()
 
 # print("==================== Update Calendar Tasks ======================")
 # # invoke calendar task microservice to update a task
@@ -473,4 +474,4 @@ print()
 # print()
 
 
-# print("============================ End of Calendar Tasks Microservice =============================")
+print("============================ End of Calendar Tasks Microservice =============================")

@@ -26,24 +26,26 @@ class Calendar_Tasks(db.Model):
     task_date = db.Column(db.String(45), nullable=False) 
     task_time = db.Column(db.String(45), nullable=False)
     task_description = db.Column(db.String(300), nullable=False)
+    priority_level = db.Column(db.String(50), nullable = False)
     task_completed = db.Column(db.String(45), nullable=False)
     user_uid = db.Column(db.String(255), nullable=False)
     calendar_uid = db.Column(db.String(255), nullable=False)
 
 
-    def __init__(self, task_uuid, task_name, task_date, task_time, task_description, task_completed, user_uid, calendar_uid):
+    def __init__(self, task_uuid, task_name, task_date, task_time, task_description, priority_level, task_completed, user_uid, calendar_uid):
         self.task_uuid = task_uuid
         self.task_name = task_name
         self.task_date = task_date
         self.task_time = task_time
         self.task_description = task_description
+        self.priority_level = priority_level
         self.task_completed = task_completed
         self.user_uid = user_uid
         self.calendar_uid = calendar_uid
 
     def json(self):
         return {"task_uuid": self.task_uuid, "task_name": self.task_name, "task_date": self.task_date, "task_time": self.task_time, "task_description": self.task_description,
-                "task_completed": self.task_completed, "user_uid": self.user_uid, "calendar_uid": self.calendar_uid}
+                "priority_level": self.priority_level, "task_completed": self.task_completed, "user_uid": self.user_uid, "calendar_uid": self.calendar_uid}
     
     @app.route("/v1/calendar_tasks/create_calendar_task", methods=['POST'])
     def create_task():
