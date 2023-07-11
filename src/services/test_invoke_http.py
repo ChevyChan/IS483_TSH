@@ -176,33 +176,33 @@ print("================== Invoking Schedule Microservice ====================")
 
 print()
 
-print("==================== Create a Schedule ======================")
-# #invoke schedule microservice to create a schedule for delivery
-# #purchase_delivery_order_uuid = str(uuid.uuid4())
-PurchaseUID = "1"
-DeliveryUID = "3da304f1-8788-43f8-9ce2-f7856ebd274f"
-calendar_uuid = "045d064e-a770-41a8-b23f-14b8c01d0cd5"
-scheduling_details = {
-                    "schedule_summary": "Delivery Order - TSH Group", 
-                    "schedule_description": "Testing for Delivery Order Scheduling",
-                    "schedule_start_date": str(datetime.now().date()), 
-                    "schedule_start_time": str(datetime.now().time()),
-                    "schedule_end_date": str(datetime.now().date()), 
-                    "schedule_end_time": str(datetime.now().time()),
-                    "schedule_from_location": "6 Sim Drive", 
-                    "schedule_to_location": "100 Hospital Way", 
-                    "priority_level": "Low",
-                    "calendar_uuid": calendar_uuid, 
-                    "purchase_uid": PurchaseUID, 
-                    "delivery_uid": DeliveryUID
-                    }
-create_results = invoke_http("http://localhost:5001/v1/schedule/create_schedule/" + PurchaseUID + "/" + DeliveryUID, method='POST',
-                             json=scheduling_details
-                             )
+# print("==================== Create a Schedule ======================")
+# # #invoke schedule microservice to create a schedule for delivery
+# # #purchase_delivery_order_uuid = str(uuid.uuid4())
+# PurchaseUID = "1"
+# DeliveryUID = "3da304f1-8788-43f8-9ce2-f7856ebd274f"
+# calendar_uuid = "045d064e-a770-41a8-b23f-14b8c01d0cd5"
+# scheduling_details = {
+#                     "schedule_summary": "Delivery Order - TSH Group", 
+#                     "schedule_description": "Testing for Delivery Order Scheduling",
+#                     "schedule_start_date": str(datetime.now().date()), 
+#                     "schedule_start_time": str(datetime.now().time()),
+#                     "schedule_end_date": str(datetime.now().date()), 
+#                     "schedule_end_time": str(datetime.now().time()),
+#                     "schedule_from_location": "6 Sim Drive", 
+#                     "schedule_to_location": "100 Hospital Way", 
+#                     "priority_level": "Low",
+#                     "calendar_uuid": calendar_uuid, 
+#                     "purchase_uid": PurchaseUID, 
+#                     "delivery_uid": DeliveryUID
+#                     }
+# create_results = invoke_http("http://localhost:5001/v1/schedule/create_schedule/" + PurchaseUID + "/" + DeliveryUID, method='POST',
+#                              json=scheduling_details
+#                              )
 
-print()
-print( create_results )
-print()
+# print()
+# print( create_results )
+# print()
 
 print("==================== Getting all Schedules ======================")
 #invoke schedule microservice to get all schedules
@@ -213,18 +213,18 @@ print()
 print( results )
 print()
 
-print("==================== Get selected Schedule ======================")
-# invoke schedule microservice to get selected schedule
-purchase_uid = '0c4fdbe8-dc67-4f20-8849-83c96951dfe3'
-delivery_uid = '1582aa22-8619-465c-aaad-ae20422a4e28'
-results = invoke_http("http://localhost:5001/v1/schedule/get_schedule_by_id/" + purchase_uid + "/" + delivery_uid, method='GET')
+# print("==================== Get selected Schedule ======================")
+# # invoke schedule microservice to get selected schedule
+# purchase_uid = '0c4fdbe8-dc67-4f20-8849-83c96951dfe3'
+# delivery_uid = '1582aa22-8619-465c-aaad-ae20422a4e28'
+# results = invoke_http("http://localhost:5001/v1/schedule/get_schedule_by_id/" + purchase_uid + "/" + delivery_uid, method='GET')
 
-print( type(results) )
-print()
-print( results )
-print()
+# print( type(results) )
+# print()
+# print( results )
+# print()
 
-print()
+# print()
 
 print("============================ End of Schedule Microservice =============================")
 
