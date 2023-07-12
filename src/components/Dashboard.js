@@ -30,6 +30,10 @@ function Dashboard() {
         navigate('/calendar')
     }
 
+    const chat = () => {
+        navigate('/chat')
+    }
+
     useEffect(() => {
         if(loading) return;
         if(!user) return navigate("/");
@@ -50,6 +54,9 @@ function Dashboard() {
                 </button>
                 <button className="dashboard__btn" onClick={calendar}>
                     Calendar
+                </button>
+                <button className="dashboard__btn" onClick={chat}>
+                    Chat
                 </button>
             </div>
         </div>

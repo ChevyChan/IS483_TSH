@@ -29,14 +29,17 @@ def retrievePrimaryCalendar():
 @app.route("/v1/google_calendar/retrieve_calendar_events/<string:calendarId>")
 def retrieveEventsFromCalendar(calendarId):
   page_token = None
+  result = []
   while True:
-    events = service.events().list(calendarId=calendarId, pageToken=page_token, timeMin='2023-05-01T00:00:00-07:00', timeMax='2023-12-31T23:59:00-23:59').execute()
-    for event in events['items']:
-      print(event['summary'])
-      return event
+    events = service.events().list(calendarId=calendarId, timeMax="2023-10-30T23:59:00-23:59", timeMin="2023-07-01T00:00:00-08:00").execute()
     page_token = events.get('nextPageToken')
-    if not page_token:
-      break
+    for event in events['items']:
+      startDate = str(event['start']['dateTime'])
+      print(event['summary'])
+      result.append(event['summary'] + ' | ' + startDate[0:10])
+    return result
+    
+    
 
 @app.route("/v1/google_calendar/create_calendar_events/<string:calendarId>/<string:summary>/<string:location>/<string:description>/<string:startTime>/<string:endTime>", methods=['POST'])
 # Adding events to Google Calendar
@@ -49,11 +52,11 @@ def addEventsToCalendar(calendarId, summary, location, description, startTime, e
     'description': description,
     'start': {
       'dateTime': startTime,
-      'timeZone': 'Singapore',
+      'timeZone': 'Asia/Singapore',
     },
     'end': {
       'dateTime': endTime,
-      'timeZone': 'Singapore',
+      'timeZone': 'Asia/Singapore',
     }
   }
 
@@ -83,3 +86,4 @@ if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5002, debug=True)
     #retrievePrimaryCalendar()
     #addEventsToCalendar("chevychan1@gmail.com", "Delivery to TSH", "Sims Ave", "Test Delivery", "2023-06-28T16:35:36-16:35", "2023-06-28T16:35:36-16:35")
+    #retrieveEventsFromCalendar("chevychan1@gmail.com")

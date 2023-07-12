@@ -48,8 +48,9 @@ def retrieveTasksListFromCalendar():
 
 @app.route("/v1/google_tasks/retrieve_tasks/<string:taskLists>")
 def retrieveTasks(taskLists):
-    tasks = service.tasks().list(tasklist = taskLists, maxResults = 20).execute()
+    tasks = service.tasks().list(tasklist = taskLists, maxResults = 20, showCompleted=False).execute()
     print(tasks)
+    return tasks
   
 body_details = {
   "status": "completed"
@@ -59,11 +60,13 @@ body_details = {
 def patchTasks(tasksList, taskId, body_details):
   task_details = service.tasks().patch(tasklist = tasksList, task = taskId, body = body_details).execute()
   print(task_details)
+  return task_details
 
 @app.route("/v1/google_tasks/delete_task/<string:tasksList>/<string:taskId>", methods=['PUT'])
 def delete_task(tasksList, taskId):
   task_details = service.tasks().delete(tasklist = tasksList, task = taskId).execute()
   print(task_details)
+  return task_details
 
 
 if __name__ == "__main__":

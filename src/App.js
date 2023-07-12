@@ -6,6 +6,7 @@ import Reset from './components/Reset';
 import Dashboard from './components/Dashboard';
 import UploadDocument from './components/UploadDocument';
 import MyCalender from './components/calendar/MyCalendar';
+import Chat from './components/chat';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route exact path="/dashboard" element={<Dashboard />} />
           <Route exact path="/upload_document" element={<UploadDocument/>} />
           <Route exact path="/calendar" element={<MyCalender/>} />
+          <Route exact path="/chat" element={<Chat/>} />          
         </Routes>
       </Router>
     </div>
