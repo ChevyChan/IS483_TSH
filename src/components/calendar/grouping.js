@@ -1,6 +1,4 @@
 import { HttpStatusCode } from "axios"
-import { ColumnChooserSelection } from "devextreme-react/data-grid";
-import { create } from "domain";
 
 export var event_info = [
   // {
@@ -61,7 +59,7 @@ export async function get_task_details(){
 
 export function create_task(task_uuid, task_name, task_date, task_time, task_description, priority_level, user_uid, calendar_uid) {
   try{
-    const response = fetch('http://localhost:5001/v1/calendar_tasks/create_calendar_task', {
+    fetch('http://localhost:5001/v1/calendar_tasks/create_calendar_task', {
       method: 'POST',
       mode: "no-cors",
       headers: {
@@ -228,9 +226,9 @@ export function sync_with_google_calendar(calendarId, summary, location, descrip
 }
 
 // This function to be added to frontend of creating tasks. ** Test this function first ** 
-function create_new_task(user_uid, task_description, priority_level){
-  const result = sync_tasks_with_google("MDU2NTM3NTk5NTIwNDUzODE5OTM6MDow", data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'], 
-  data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date'] + "T" + data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time'] + "Z")
+function create_new_task(user_uid, task_name, task_period_date, task_period_time, task_description, priority_level){
+  const result = sync_tasks_with_google("MDU2NTM3NTk5NTIwNDUzODE5OTM6MDow", task_name, 
+  task_period_date + "T" + task_period_time + "Z")
 
   var task_id = result['id']
   var task_title = result['title']
@@ -247,156 +245,101 @@ function create_new_task(user_uid, task_description, priority_level){
   create_task(task_id, task_title, task_date, task_time, task_description, priority_level, user_uid, calendar_uid)
 }
 
-// Re-discuss this function again
-// Create the tasks using Google Calendar and store the return response in database
-// getTaskDetailsFromGoogleCalendar("MDU2NTM3NTk5NTIwNDUzODE5OTM6MDow").then(response => {
-//   console.log(response)
-//   if (response.items.length == 0){
-//       // If there are 0 tasks in the google calendar, verification of existing tasks is not required
-//       const result = sync_tasks_with_google("MDU2NTM3NTk5NTIwNDUzODE5OTM6MDow", data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'], 
-//       data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date'] + "T" + data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time'] + "Z")
+// // Get all the task details from database and store in a dictionary to reflect on the calendar
+// get_task_details().then(data => {
+//   for (let task_details in data['data']["Calendar_Tasks_Details"]){
+//     var startDate = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date']
+//     var startTime = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time']
+//     var endDate = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date']
+//     var endTime = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time']
 
-//       task_id = result['items']['id']
-
-//       create_task()
-
-//   }else{
-//     for (let task in response['items']){
-//       for (let task_details in data['data']["Calendar_Tasks_Details"]){
-//         //console.log(task)
-//         var dueDate = response['items'][task]['due'].slice(0,10)
-//         //console.log(data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'] + " | " + startDate)
-//         if(response['items'][task]['status'] != "needsAction"){
-//           continue
-//         }else{
-//           if(response['items'][task]['title'] + " | " + dueDate == data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'] + " | " + startDate){
-//             // console.log(response['items'][task]['title'] + " | " + dueDate)
-//             // console.log(data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'] + " | " + startDate)
-//             // console.log("Great! Already added to Google Calendar.")
-//             continue
-//           }else{
-//             // console.log(response['items'][task]['title'] + " | " + dueDate)
-//             // console.log(data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'] + " | " + startDate)
-//             // console.log("Oh no! It has not been added to Google Calendar yet!")
-//             sync_tasks_with_google("MDU2NTM3NTk5NTIwNDUzODE5OTM6MDow", data['data']['Calendar_Tasks_Details'][parseInt(task)]['task_name'], 
-//             data['data']['Calendar_Tasks_Details'][parseInt(task)]['task_date'] + "T" + data['data']['Calendar_Tasks_Details'][parseInt(task)]['task_time'] + "Z")
-//           }
-//         } 
-//       }
-//     }
-//   }
-// })  
-
-
-// Get all the task details from database and store in a dictionary to reflect on the calendar
-// Re-disuss this function again, to be used only for displaying the tasks to front-end?
-get_task_details().then(data => {
-  for (let task_details in data['data']["Calendar_Tasks_Details"]){
-    var startDate = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date']
-    var startTime = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time']
-    var endDate = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date']
-    var endTime = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time']
-
-    event_info.push({
-      title: data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'],
-      priorityId: parseInt(data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['priority_level']),
-      startDate: new Date(startDate.slice(0,4), startDate.slice(5,7) - 1, startDate.slice(8,10), startTime.slice(0,2), startTime.slice(3,5)),
-      endDate: new Date(endDate.slice(0,4), endDate.slice(5,7) - 1, endDate.slice(8,10), endTime.slice(0,2), endTime.slice(3,5)),
-      id: data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_uuid']
-    })
-  }
-  // getTaskDetailsFromGoogleCalendar("MDU2NTM3NTk5NTIwNDUzODE5OTM6MDow").then(response => {
-  //   console.log(response)
-  //   if (response.items.length == 0){
-  //     for (let task_details in data['data']["Calendar_Tasks_Details"]){
-  //       sync_tasks_with_google("MDU2NTM3NTk5NTIwNDUzODE5OTM6MDow", data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'], 
-  //       data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date'] + "T" + data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time'] + "Z")
-  //     }
-  //   }else{
-  //     for (let task in response['items']){
-  //       for (let task_details in data['data']["Calendar_Tasks_Details"]){
-  //         //console.log(task)
-  //         var dueDate = response['items'][task]['due'].slice(0,10)
-  //         //console.log(data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'] + " | " + startDate)
-  //         if(response['items'][task]['status'] != "needsAction"){
-  //           continue
-  //         }else{
-  //           if(response['items'][task]['title'] + " | " + dueDate == data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'] + " | " + startDate){
-  //             console.log(response['items'][task]['title'] + " | " + dueDate)
-  //             console.log(data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'] + " | " + startDate)
-  //             console.log("Great! Already added to Google Calendar.")
-  //             continue
-  //           }else{
-  //             console.log(response['items'][task]['title'] + " | " + dueDate)
-  //             console.log(data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'] + " | " + startDate)
-  //             console.log("Oh no! It has not been added to Google Calendar yet!")
-  //             sync_tasks_with_google("MDU2NTM3NTk5NTIwNDUzODE5OTM6MDow", data['data']['Calendar_Tasks_Details'][parseInt(task)]['task_name'], 
-  //             data['data']['Calendar_Tasks_Details'][parseInt(task)]['task_date'] + "T" + data['data']['Calendar_Tasks_Details'][parseInt(task)]['task_time'] + "Z")
-  //           }
-  //         } 
-  //       }
-  //     }
-  //   }
-  // })  
-})
-
-// Retrieve all the scheduling details from database and store it in a dictionary to display at the frontend calendar
-// getScheduleDetails().then(data => {
-
-//   for (let event_details in data['data']['Scheduling_List']) {
-
-//     var startDate = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_date']
-//     var startTime = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_time']
-//     var endDate = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_date']
-//     var endTime = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_time']
-
-//     var adj_start_date = new Date(startDate.slice(0,4), startDate.slice(5,7) - 1, startDate.slice(8,10) - 1)
-//     var adj_start_time = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_time'].slice(0,8)
-//     var adj_end_date = new Date(endDate.slice(0,4), endDate.slice(5,7) - 1 , endDate.slice(8,10) - 1)
-//     var adj_end_time =  data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_time'].slice(0,5)
-
-//     console.log(adj_start_date + " | " + adj_start_time + ", " + adj_end_date + " | " + adj_end_time)
-
-//     console.log(data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'] + " | " + startDate)
-  
 //     event_info.push({
-//       title: data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'],
-//       priorityId: parseInt(data['data']['Scheduling_List'][parseInt(event_details)]['priority_level']),
+//       title: data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'],
+//       priorityId: parseInt(data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['priority_level']),
 //       startDate: new Date(startDate.slice(0,4), startDate.slice(5,7) - 1, startDate.slice(8,10), startTime.slice(0,2), startTime.slice(3,5)),
-//       endDate: new Date(endDate.slice(0,4), endDate.slice(5,7) - 1 , endDate.slice(8,10), endTime.slice(0,2), endTime.slice(3,5)),
-//       id: data['data']['Scheduling_List'][parseInt(event_details)]['delivery_uid']
+//       endDate: new Date(endDate.slice(0,4), endDate.slice(5,7) - 1, endDate.slice(8,10), endTime.slice(0,2), endTime.slice(3,5)),
+//       id: data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_uuid']
 //     })
 //   }
-//   getEventDetailsFromGoogleCalendar("chevychan1@gmail.com").then(response =>{
-//     console.log(response)
-//     if(response.length == 0){
-//       for(let event_details in data['data']['Scheduling_List']){
-//         sync_with_google_calendar("chevychan1@gmail.com", 
-//         data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'], 
-//         data['data']['Scheduling_List'][parseInt(event_details)]['schedule_to_location'], 
-//         data['data']['Scheduling_List'][parseInt(event_details)]['schedule_description'], 
-//         data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_date'] + 'T' + data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_time'].slice(0,8) + "-" + data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_time'].slice(0,5), 
-//         data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_date'] + 'T' + data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_time'].slice(0,8) + "-" + data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_time'].slice(0,5))
-//       }
-//     }
-//     for(let event_details in data['data']['Scheduling_List']){
-//       for(let event in response){
-//         //console.log(response[event])
-//         // Checking error. Need to debug
-//         if(response[event] == data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'] + " | " + startDate){
-//           console.log("Schedule exist. Please verify.")
-//           return
-//         }else{
-//           console.log("Oh no!")
-//           sync_with_google_calendar("chevychan1@gmail.com", 
-//           data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'], 
-//           data['data']['Scheduling_List'][parseInt(event_details)]['schedule_to_location'], 
-//           data['data']['Scheduling_List'][parseInt(event_details)]['schedule_description'], 
-//           data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_date'] + 'T' + data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_time'].slice(0,8) + "-" + data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_time'].slice(0,5), 
-//           data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_date'] + 'T' + data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_time'].slice(0,8) + "-" + data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_time'].slice(0,5))
-//         }
-//       }
-//     }
-//   })
-//   console.log(event_info)
 // })
+
+// Retrieve all the scheduling details from database and store it in a dictionary to display at the frontend calendar
+getScheduleDetails().then(data => {
+
+  for (let event_details in data['data']['Scheduling_List']) {
+
+    var startDate = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_date']
+    var startTime = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_time']
+    var endDate = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_date']
+    var endTime = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_time']
+
+    // var adj_start_date = new Date(startDate.slice(0,4), startDate.slice(5,7) - 1, startDate.slice(8,10) - 1)
+    // var adj_start_time = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_time'].slice(0,8)
+    // var adj_end_date = new Date(endDate.slice(0,4), endDate.slice(5,7) - 1 , endDate.slice(8,10) - 1)
+    // var adj_end_time =  data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_time'].slice(0,5)
+
+    // console.log(adj_start_date + " | " + adj_start_time + ", " + adj_end_date + " | " + adj_end_time)
+
+    console.log(data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'] + " | " + startDate)
+  
+    event_info.push({
+      title: data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'],
+      priorityId: parseInt(data['data']['Scheduling_List'][parseInt(event_details)]['priority_level']),
+      startDate: new Date(startDate.slice(0,4), startDate.slice(5,7) - 1, startDate.slice(8,10), startTime.slice(0,2), startTime.slice(3,5)),
+      endDate: new Date(endDate.slice(0,4), endDate.slice(5,7) - 1 , endDate.slice(8,10), endTime.slice(0,2), endTime.slice(3,5)),
+      id: data['data']['Scheduling_List'][parseInt(event_details)]['delivery_uid']
+    })
+    // Note: When the scheduling algorithm is executed, only run the job once. For subsequent jobs, it will be for other deliveries that have not been executed.
+    // Check back on this again. There's still a bug (e.g., Bad Request) in the algorithm.
+    sync_with_google_calendar("chevychan1@gmail.com", 
+    data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'], 
+    data['data']['Scheduling_List'][parseInt(event_details)]['schedule_to_location'], 
+    data['data']['Scheduling_List'][parseInt(event_details)]['schedule_description'], 
+    startDate + 'T' + startTime.slice(0,12), 
+    endDate + 'T' + endTime.slice(0,12))
+  }
+
+  // Re-check the date and timing. Does not tally with database data
+  // getEventDetailsFromGoogleCalendar("chevychan1@gmail.com").then(response =>{
+  //   console.log(response)
+    // if(response.length == 0){
+    //   for(let event_details in data['data']['Scheduling_List']){
+    //     sync_with_google_calendar("chevychan1@gmail.com", 
+    //     data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'], 
+    //     data['data']['Scheduling_List'][parseInt(event_details)]['schedule_to_location'], 
+    //     data['data']['Scheduling_List'][parseInt(event_details)]['schedule_description'], 
+    //     startDate + 'T' + startTime.slice(0,12), 
+    //     endDate + 'T' + endTime.slice(0,12))
+        // console.log(data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'], 
+        // data['data']['Scheduling_List'][parseInt(event_details)]['schedule_to_location'], 
+        // data['data']['Scheduling_List'][parseInt(event_details)]['schedule_description'], 
+        // startDate + 'T' + startTime.slice(0,5), 
+        // endDate + 'T' + endTime.slice(0,5))
+      // }
+    // }
+    // for(let event_details in data['data']['Scheduling_List']){
+    //   // for(let event in response){
+    //   //   //console.log(response[event])
+    //   //   // Checking error. Need to debug
+    //   //   if(response[event] == data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'] + " | " + startDate){
+    //   //     console.log("Schedule exist. Please verify.")
+    //   //     return
+    //   //   }else{
+    //   //     console.log("Oh no!")
+    //       // console.log(data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'], 
+    //       // data['data']['Scheduling_List'][parseInt(event_details)]['schedule_to_location'], 
+    //       // data['data']['Scheduling_List'][parseInt(event_details)]['schedule_description'], 
+    //       // startDate + 'T' + startTime.slice(0,5), 
+    //       // endDate + 'T' + endTime.slice(0,5))
+    //       sync_with_google_calendar("chevychan1@gmail.com", 
+    //       data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'], 
+    //       data['data']['Scheduling_List'][parseInt(event_details)]['schedule_to_location'], 
+    //       data['data']['Scheduling_List'][parseInt(event_details)]['schedule_description'], 
+    //       startDate + 'T' + startTime.slice(0,12), 
+    //       endDate + 'T' + endTime.slice(0,12))
+    //     }
+      // }
+  //   }
+  // })
+  console.log(event_info)
+})

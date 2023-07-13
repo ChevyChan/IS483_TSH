@@ -451,8 +451,8 @@ export default class Demo extends React.PureComponent {
     //console.log(`${year}-${month}-${day}`)
 
     // Get all the schedule from database
-    //getScheduleDetails()
-    get_task_details()
+    getScheduleDetails()
+    //get_task_details()
 
     this.state = {
       currentDate: `${year}-${month}-${day}`,

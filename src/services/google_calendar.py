@@ -31,7 +31,7 @@ def retrieveEventsFromCalendar(calendarId):
   page_token = None
   result = []
   while True:
-    events = service.events().list(calendarId=calendarId, timeMax="2023-10-30T23:59:00-23:59", timeMin="2023-07-01T00:00:00-08:00").execute()
+    events = service.events().list(calendarId=calendarId, timeMax="2023-12-30T23:59:00-23:59", timeMin="2023-07-01T00:00:00-08:00").execute()
     page_token = events.get('nextPageToken')
     for event in events['items']:
       startDate = str(event['start']['dateTime'])
@@ -45,18 +45,18 @@ def retrieveEventsFromCalendar(calendarId):
 # Adding events to Google Calendar
 def addEventsToCalendar(calendarId, summary, location, description, startTime, endTime):
   # Replace this event details to scheduling details and POST to google calendar and sync with DB to display at Calendar UI
-  # events_result = retrieveEventsFromCalendar(calendarId)
+  events_result = retrieveEventsFromCalendar(calendarId)
   event = {
     'summary': summary,
     'location': location,
     'description': description,
     'start': {
       'dateTime': startTime,
-      'timeZone': 'Asia/Singapore',
+      'timeZone': 'Asia/Singapore'
     },
     'end': {
       'dateTime': endTime,
-      'timeZone': 'Asia/Singapore',
+      'timeZone': 'Asia/Singapore'
     }
   }
 
@@ -85,5 +85,5 @@ def updateEventInCalendar(eventId):
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5002, debug=True)
     #retrievePrimaryCalendar()
-    #addEventsToCalendar("chevychan1@gmail.com", "Delivery to TSH", "Sims Ave", "Test Delivery", "2023-06-28T16:35:36-16:35", "2023-06-28T16:35:36-16:35")
+    #addEventsToCalendar("chevychan1@gmail.com", "Delivery to TSH", "Sims Ave", "Test Delivery", "2023-07-13T00:00:00", "2023-07-13T17:30:00")
     #retrieveEventsFromCalendar("chevychan1@gmail.com")
