@@ -273,13 +273,6 @@ getScheduleDetails().then(data => {
     var endDate = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_date']
     var endTime = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_time']
 
-    // var adj_start_date = new Date(startDate.slice(0,4), startDate.slice(5,7) - 1, startDate.slice(8,10) - 1)
-    // var adj_start_time = data['data']['Scheduling_List'][parseInt(event_details)]['schedule_start_time'].slice(0,8)
-    // var adj_end_date = new Date(endDate.slice(0,4), endDate.slice(5,7) - 1 , endDate.slice(8,10) - 1)
-    // var adj_end_time =  data['data']['Scheduling_List'][parseInt(event_details)]['schedule_end_time'].slice(0,5)
-
-    // console.log(adj_start_date + " | " + adj_start_time + ", " + adj_end_date + " | " + adj_end_time)
-
     console.log(data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'] + " | " + startDate)
   
     event_info.push({
@@ -295,8 +288,8 @@ getScheduleDetails().then(data => {
     data['data']['Scheduling_List'][parseInt(event_details)]['schedule_summary'], 
     data['data']['Scheduling_List'][parseInt(event_details)]['schedule_to_location'], 
     data['data']['Scheduling_List'][parseInt(event_details)]['schedule_description'], 
-    startDate + 'T' + startTime.slice(0,12), 
-    endDate + 'T' + endTime.slice(0,12))
+    startDate + 'T' + startTime.slice(0,8), 
+    endDate + 'T' + endTime.slice(0,8))
   }
 
   // Re-check the date and timing. Does not tally with database data

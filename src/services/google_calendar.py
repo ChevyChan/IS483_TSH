@@ -62,7 +62,7 @@ def addEventsToCalendar(calendarId, summary, location, description, startTime, e
 
   event_details = service.events().insert(calendarId=calendarId, body=event).execute()
   print('Event Created: ' + event_details['summary'])
-  return 'Event Created: ' + event_details['summary']
+  return event_details
 
 @app.route("/v1/google_calendar/update_calendar_event", methods=['PUT'])
 # Updating Events in Google Calendar
