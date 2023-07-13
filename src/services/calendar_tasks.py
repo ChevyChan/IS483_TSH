@@ -52,6 +52,7 @@ class Calendar_Tasks(db.Model):
         data = request.get_json()
 
         try:
+            # Retrieve the Tasks ID from Google Calendar. Push the information to Google Calendar first and use the returned Task ID 
             Task_UID = str(uuid.uuid4())
             task_details = Calendar_Tasks(Task_UID, **data)
 

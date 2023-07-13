@@ -33,9 +33,10 @@ import FormControl from '@mui/material/FormControl';
 import classNames from 'clsx';
 
 import { priorities } from './tasks';
-import { data as tasks } from './grouping';
+import { event_info as tasks, getScheduleDetails, get_task_details} from './grouping';
+import CustomStore from 'devextreme/data/custom_store';
+import { HttpStatusCode } from 'axios';
 
-//import handleAuthClick from '../../services/google_calendar.js';
 
 const grouping = [{
   resourceName: 'priorityId',
@@ -440,9 +441,22 @@ export default class Demo extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    var date = new Date()
+    var day = date.getDate()
+    var month = date.getMonth() + 1
+    var year = date.getFullYear()
+
+    if (month.toString().length < 2) month = '0' + month;
+    if (day.toString().length < 2) day = '0' + day;
+    //console.log(`${year}-${month}-${day}`)
+
+    // Get all the schedule from database
+    //getScheduleDetails()
+    get_task_details()
+
     this.state = {
-      currentDate: '2018-05-28',
-      currentViewName: 'Day',
+      currentDate: `${year}-${month}-${day}`,
+      currentViewName: 'Work Week',
       // Update 'tasks' attribute by linking with google events
       data: tasks,
       currentPriority: 0,
