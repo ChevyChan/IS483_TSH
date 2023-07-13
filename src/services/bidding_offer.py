@@ -202,6 +202,10 @@ class Bidding_Offer(db.Model):
                         bidding_offer.bid_price = data["bid_price"]
                     else:
                         bidding_offer.bid_price = bidding_offer.bid_price
+                    if data["Bidding_Offer_Result"]:
+                        bidding_offer.Bidding_Offer_Result = data["Bidding_Offer_Result"]
+                    else:
+                        bidding_offer.Bidding_Offer_Result = bidding_offer.Bidding_Offer_Result
                     db.session.commit()
                     return jsonify(
                         {
@@ -248,7 +252,7 @@ class Bidding_Offer(db.Model):
 @app.route("/v1/bidding_offer/update_bidding_offer_status/<string:BiddingUID>", methods=["PUT"])
 def update_bidding_offer_status(BiddingUID):
     # Retrieve all the bids that are related to the Bidding ID
-    bidding_offer = Bidding_Offer.query.filter_by(BiddingUID=BiddingUID).all()
+    bidding_offer = Bidding_Offer.query.filter_by(BiddingUID=BiddingUID, Bidding_Offer_Result="Review").all()
 
     # return jsonify(
     #     {
@@ -416,4 +420,4 @@ def update_bidding_offer_status_rejected(BiddingUID):
     ), 404
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5007, debug=True)

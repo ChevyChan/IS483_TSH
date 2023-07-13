@@ -33,9 +33,7 @@ import FormControl from '@mui/material/FormControl';
 import classNames from 'clsx';
 
 import { priorities } from './tasks';
-import { event_info as tasks, getScheduleDetails, get_task_details} from './grouping';
-import CustomStore from 'devextreme/data/custom_store';
-import { HttpStatusCode } from 'axios';
+import { event_info as tasks, getScheduleDetails, get_task_details, create_new_task} from './grouping';
 
 
 const grouping = [{

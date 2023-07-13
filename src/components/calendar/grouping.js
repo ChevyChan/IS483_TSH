@@ -10,33 +10,10 @@ export var event_info = [
   // }
 ]
 
+// Obtaining calendar details
 export async function get_calendar_details() {
   try{
     const response = await fetch('http://localhost:5002/v1/google_calendar/retrieve_default_calendar', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Error! status: ${response.status}`);
-    }
-
-    // 2) await the .json() call to get the data
-    const result = await response.json();
-    console.log(result)
-    return result;
-
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-// retrieve all the task details from database
-export async function get_task_details(){
-  try{  
-    const response = await fetch('http://localhost:5001/v1/calendar_tasks/get_all_calendar_tasks', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -87,6 +64,95 @@ export function create_task(task_uuid, task_name, task_date, task_time, task_des
       return result
     })
   } catch(err) {
+    console.log(err)
+  }
+}
+
+// retrieve all the task details from database
+export async function get_task_details(){
+  try{  
+    const response = await fetch('http://localhost:5001/v1/calendar_tasks/get_all_calendar_tasks', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Error! status: ${response.status}`);
+    }
+
+    // 2) await the .json() call to get the data
+    const result = await response.json();
+    console.log(result)
+    return result;
+
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export function update_selected_task(task_uid){
+  try{
+    fetch("http://localhost:5001/v1/calendar_tasks/update_calendar_tasks/" + task_uid, {
+      method: "PUT",
+      mode: "no-cors",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
+        // Add more fields if needed
+        "task_completed": "Completed"
+      }
+    })
+    .then(response => {
+      if(!response.ok){
+        throw new Error("Bad Request. Please try again later!")
+      }
+    })
+    .then(data => {
+      console.log(data)
+      return data
+    })
+  }catch(err) {
+    console.log(err)
+  }
+}
+
+// Create schedule for delivery. This is be used at the scheduling process
+export async function create_schedule(purchase_uid, delivery_uid, summary, description, startDate, startTime, endDate, endTime, from_location, to_location, priority_level, calendar_uuid) {
+  try {
+    fetch('http://localhost:5003/v1/schedule/create_schedule/' + purchase_uid + "/" +delivery_uid, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
+        "schedule_summary": summary, 
+        "schedule_description": description,
+        "schedule_start_date": startDate, 
+        "schedule_start_time": startTime,
+        "schedule_end_date": endDate, 
+        "schedule_end_time": endTime,
+        "schedule_from_location": from_location, 
+        "schedule_to_location": to_location, 
+        "priority_level": priority_level,
+        "calendar_uuid": calendar_uuid, 
+        "purchase_uid": purchase_uid, 
+        "delivery_uid": delivery_uid
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Bad Request! Please try again later.')
+      }
+    })
+    .then(data => {
+      console.log(data)
+      return data
+    })
+  } catch (err) {
     console.log(err)
   }
 }
@@ -225,8 +291,26 @@ export function sync_with_google_calendar(calendarId, summary, location, descrip
   }
 }
 
+// // Get all the task details from database and store in a dictionary to reflect on the calendar
+// get_task_details().then(data => {
+//   for (let task_details in data['data']["Calendar_Tasks_Details"]){
+//     var startDate = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date']
+//     var startTime = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time']
+//     var endDate = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date']
+//     var endTime = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time']
+
+//     event_info.push({
+//       title: data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'],
+//       priorityId: parseInt(data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['priority_level']),
+//       startDate: new Date(startDate.slice(0,4), startDate.slice(5,7) - 1, startDate.slice(8,10), startTime.slice(0,2), startTime.slice(3,5)),
+//       endDate: new Date(endDate.slice(0,4), endDate.slice(5,7) - 1, endDate.slice(8,10), endTime.slice(0,2), endTime.slice(3,5)),
+//       id: data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_uuid']
+//     })
+//   }
+// })
+
 // This function to be added to frontend of creating tasks. ** Test this function first ** 
-function create_new_task(user_uid, task_name, task_period_date, task_period_time, task_description, priority_level){
+export function create_new_task(user_uid, task_name, task_period_date, task_period_time, task_description, priority_level){
   const result = sync_tasks_with_google("MDU2NTM3NTk5NTIwNDUzODE5OTM6MDow", task_name, 
   task_period_date + "T" + task_period_time + "Z")
 
@@ -245,23 +329,11 @@ function create_new_task(user_uid, task_name, task_period_date, task_period_time
   create_task(task_id, task_title, task_date, task_time, task_description, priority_level, user_uid, calendar_uid)
 }
 
-// // Get all the task details from database and store in a dictionary to reflect on the calendar
-// get_task_details().then(data => {
-//   for (let task_details in data['data']["Calendar_Tasks_Details"]){
-//     var startDate = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date']
-//     var startTime = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time']
-//     var endDate = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_date']
-//     var endTime = data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_time']
-
-//     event_info.push({
-//       title: data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_name'],
-//       priorityId: parseInt(data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['priority_level']),
-//       startDate: new Date(startDate.slice(0,4), startDate.slice(5,7) - 1, startDate.slice(8,10), startTime.slice(0,2), startTime.slice(3,5)),
-//       endDate: new Date(endDate.slice(0,4), endDate.slice(5,7) - 1, endDate.slice(8,10), endTime.slice(0,2), endTime.slice(3,5)),
-//       id: data['data']['Calendar_Tasks_Details'][parseInt(task_details)]['task_uuid']
-//     })
-//   }
-// })
+// Update status of the tasks selected
+export function update_existing_task(task_id) {
+  const result = update_selected_task(task_id) 
+  return result
+}
 
 // Retrieve all the scheduling details from database and store it in a dictionary to display at the frontend calendar
 getScheduleDetails().then(data => {
