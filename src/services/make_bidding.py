@@ -11,7 +11,7 @@ from os import environ
 import requests
 from invokes import invoke_http
 
-import amqp_setup
+# import amqp_setup
 import pika
 import json
 
@@ -27,7 +27,7 @@ reject_bid_URL = "http://localhost:5007/v1/bidding_offer/update_bidding_offer_st
 confirm_bid_URL = "http://localhost:5007/v1/bidding_offer/update_bidding_offer"
 
 # To be executed whenever a delivery provider have made a bid offer
-def make_bids(user_uid, bid_price):
+def make_bids(user_uid, bid_uid, bid_price):
     # User makes bid - Create Bidding Offer
     # Invoke the user microservice
     print('\n-----Invoking user microservice-----')
@@ -44,10 +44,10 @@ def make_bids(user_uid, bid_price):
     if code not in range(200, 300):  # THIS IS FOR USER!!!
 
         # Inform the error microservice
-        print('\n\n-----Publishing the (user error) message with routing_key=user.error-----')
+        # print('\n\n-----Publishing the (user error) message with routing_key=user.error-----')
 
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.error",
-                                         body=message, properties=pika.BasicProperties(delivery_mode=2))
+        # amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.error",
+        #                                  body=message, properties=pika.BasicProperties(delivery_mode=2))
         # make message persistent within the matching queues until it is received by some receiver
         # (the matching queues have to exist and be durable and bound to the exchange)
 
@@ -60,7 +60,7 @@ def make_bids(user_uid, bid_price):
         return {
             "code": 500,
             "data": {"user_result": user_result},
-            "message": "User retrieval failure sent for error handling."
+            "message": "User retrival failure sent for error handling."
         }
 
     else:
@@ -74,20 +74,19 @@ def make_bids(user_uid, bid_price):
    
         # Invoke the event microservice
         print('\n\n-----Invoking bidding_offer microservice-----')
-        UserID = user_result['user_uuid']
-        BiddingID = str(uuid.uuid4())
+        UserID = user_result['data']['user_uuid']
         # Enter bidding offer information
         theRequest = {
-            "bidding_offer_uuid": BiddingID,
+            "bidding_offer_uuid": str(uuid.uuid4()),
             "bid_price": bid_price,
             "UserUID": UserID,
-            "BiddingUID": BiddingID,
+            "BiddingUID": bid_uid,
             "Bidding_Offer_Result": "Review"
         }
         # bidding_URL = bidding_URL + "/" + UserID + "/" + BiddingID
         print("*************HIIIIII**************")
         print(theRequest)
-        bidding_offer_url = create_bid_URL + "/" + UserID + "/" + BiddingID
+        bidding_offer_url = create_bid_URL + "/" + UserID + "/" + bid_uid
        # print(theRequest2)
         bidding_offer_result = invoke_http(
             bidding_offer_url, method="POST", json=theRequest)  # used to be json=order_result['data']
@@ -95,8 +94,9 @@ def make_bids(user_uid, bid_price):
 
         # Check the bidding_offer result;
         # if a failure, send it to the error microservice.
-        message = json.dumps(bidding_offer_result)
-        code = bidding_offer_result["code"]
+        #message = json.dumps(bidding_offer_result)
+
+        code = bidding_offer_result[0]["code"]
         # @Swinnerton, need to confirm with you on this.
         if code not in range(200, 300, 500):  # THIS IS FOR Bidding Offer!!!
             theRequest2 = {
@@ -111,8 +111,8 @@ def make_bids(user_uid, bid_price):
             print(
                 '\n\n-----Publishing the (event error!!!!) message with routing_key=event.error-----')
 
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="bidding_offer.error",
-                                             body=message, properties=pika.BasicProperties(delivery_mode=2))
+            # amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="bidding_offer.error",
+            #                                  body=message, properties=pika.BasicProperties(delivery_mode=2))
 
             print("\nEvent status ({:d}) published to the RabbitMQ Exchange:".format(
                 code), bidding_offer_result)
@@ -131,8 +131,8 @@ def make_bids(user_uid, bid_price):
             print(
                 '\n\n-----Publishing the (Bidding Offer info) message with routing_key=send.notify-----')
             # event and the user
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="send.notify",
-                                             body=message, properties=pika.BasicProperties(delivery_mode=2))
+            # amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="send.notify",
+            #                                  body=message, properties=pika.BasicProperties(delivery_mode=2))
 
     # After bid has been made, trigger an automated email to the delivery provider
     
@@ -208,4 +208,4 @@ def confirm_bidding_offer(bidding_uid):
 
 
    
-    
+# make_bids('5a0138da-13af-4990-be88-1e5781f23925', "3ef26090-8b4c-41af-ab38-5266e8aa728e", "200")
