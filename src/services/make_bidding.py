@@ -172,27 +172,32 @@ def accept_bidding_offer(bidding_uid):
     return
 
 
-def confirm_bidding_offer(bidding_uid):
+def confirm_bidding_offer(bidding_offer_uid):
     # Wait for reply by "Selected" delivery provider to "Confirm" job
     
     # Invoking the bidding offer microservice
     print('\n\n-----Invoking bidding_offer microservice => Function: Confirm Bid URL-----')
     # Delivery provider to confirm the offer with an "Confirmed" status
     theRequest = {
+        "bid_price": "",
         "Bidding_Offer_Result": "Confirmed"
     }
 
-    bidding_offer_url = confirm_bid_URL + "/" + bidding_uid
+    bidding_offer_url = confirm_bid_URL + "/" + bidding_offer_uid
     # print(theRequest2)
     bidding_offer_result = invoke_http(
         bidding_offer_url, method="PUT", json=theRequest)  # used to be json=order_result['data']
     print("bidding_offer_result:", bidding_offer_result, '\n')
+
+    # Retrieve the Bidding_UID of the Bidding Offer
+    bidding_uid = bidding_offer_result['data']['bidding_result']['bidding_details']['BiddingUID']
 
     # If confirmed, reject the other bids from other delivery provider
     if(bidding_offer_result["data"]["bidding_result"]["bidding_details"]["Bidding_Offer_Result"] == "Confirmed"):
         # Call reject_bid_url to reject all other bids
         print('\n\n-----Invoking bidding_offer microservice => Function: Reject Bid URL-----')
         theRequest = {
+            "bid_price": "",
             "Bidding_Offer_Result": "Rejected"
         }
 
@@ -201,11 +206,39 @@ def confirm_bidding_offer(bidding_uid):
             bidding_offer_url, method="PUT", json=theRequest)
         
         print("bidding_offer_result:", bidding_offer_result, '\n')
+    
+        return bidding_offer_result
     else:
-        # Otherwise, loop back and check for the next lowest offer, accept and repeat Step 3
-        result = accept_bidding_offer(bidding_uid)
-        return result
+        print(bidding_offer_result["data"]["bidding_result"]["bidding_details"]["Bidding_Offer_Result"])
 
 
-   
+def decline_bidding_offer(bidding_offer_uid):
+    # Wait for reply by "Selected" delivery provider to "Decline" job
+    
+    # Invoking the bidding offer microservice
+    print('\n\n-----Invoking bidding_offer microservice => Function: Confirm Bid URL-----')
+    # Delivery provider to confirm the offer with an "Confirmed" status
+    theRequest = {
+        "bid_price": "",
+        "Bidding_Offer_Result": "Declined"
+    }
+
+    bidding_offer_url = confirm_bid_URL + "/" + bidding_offer_uid
+    # print(theRequest2)
+    bidding_offer_result = invoke_http(
+        bidding_offer_url, method="PUT", json=theRequest)  # used to be json=order_result['data']
+    print("bidding_offer_result:", bidding_offer_result, '\n')
+
+    # Send an automated email to both TSH and the selected Delivery Provider confirm that they have rejected the job 
+
+    # Get the Bidding_UID from the Bidding Offer
+    bidding_uid = bidding_offer_result["data"]["bidding_result"]["bidding_details"]["BiddingUID"]
+    print(bidding_uid)
+
+    return accept_bidding_offer(bidding_uid)
+
+
 # make_bids('5a0138da-13af-4990-be88-1e5781f23925', "3ef26090-8b4c-41af-ab38-5266e8aa728e", "200")
+#accept_bidding_offer("3ef26090-8b4c-41af-ab38-5266e8aa728e")
+#confirm_bidding_offer("72bc3617-e8bf-49ba-b971-d09fe1739dd6")
+#decline_bidding_offer("4d124378-d390-4107-bc58-0e8da73db4bd")

@@ -315,28 +315,28 @@ CORS(app)
 # print("==================== Getting all biddings bid by Bidding======================")
 # #invoke bidding microservice to get all biddings
 # BiddingUID = "3ef26090-8b4c-41af-ab38-5266e8aa728e"
-# results = invoke_http("http://localhost:5001/v1/bidding_offer/get_all_bidding_offers/" + BiddingUID, method='GET')
+# results = invoke_http("http://localhost:5007/v1/bidding_offer/get_all_bidding_offers/" + BiddingUID, method='GET')
 
 # print( type(results) )
 # print()
 # print( results )
 # print()
 
-# print("==================== Get selected bidding bid ======================")
-# # invoke bidding microservice to get selected bidding
-# bidding_bid_uuid = '5ed1d1d1-dfa5-4373-bdc4-fe4dd0add17f'
-# results = invoke_http("http://localhost:5001/v1/bidding_offer/get_bidding_offer_by_id/" + bidding_bid_uuid, method='GET')
+print("==================== Get selected bidding bid ======================")
+# invoke bidding microservice to get selected bidding
+bidding_bid_uuid = '3dcb7c86-4a4a-4a52-9210-d74d68085091'
+results = invoke_http("http://localhost:5007/v1/bidding_offer/get_bidding_offer_by_id/" + bidding_bid_uuid, method='GET')
 
-# print( type(results) )
-# print()
-# print( results )
-# print()
+print( type(results) )
+print()
+print( results )
+print()
 
 # print("==================== Update bidding bid ======================")
 # # invoke bidding microservice to update a bid
-# bidding_bid_uuid = '5ed1d1d1-dfa5-4373-bdc4-fe4dd0add17f'
-# bidding_details = { "bid_price": "1200"}
-# create_results = invoke_http("http://localhost:5001/v1/bidding_offer/update_bidding_offer/" + bidding_bid_uuid, method='PUT',
+# bidding_bid_uuid = '3dcb7c86-4a4a-4a52-9210-d74d68085091'
+# bidding_details = { "bid_price": "", "Bidding_Offer_Result": "Review"}
+# create_results = invoke_http("http://localhost:5007/v1/bidding_offer/update_bidding_offer/" + bidding_bid_uuid, method='PUT',
 #                              json=bidding_details
 #                              )
 
@@ -357,17 +357,17 @@ CORS(app)
 # print()
 
 
-# print("==================== Update bidding bid status (Rejection) ======================")
-# # invoke bidding microservice to update a bid
-# bidding_offer_uuid = '3ef26090-8b4c-41af-ab38-5266e8aa728e'
-# bidding_details = { "Bidding_Offer_Result": "Rejected"}
-# create_results = invoke_http("http://localhost:5001/v1/bidding_offer/update_bidding_offer_status_rejection/" + bidding_offer_uuid, method='PUT',
-#                              json=bidding_details
-#                              )
+print("==================== Update bidding bid status (Rejection) ======================")
+# invoke bidding microservice to update a bid
+bidding_offer_uuid = '3ef26090-8b4c-41af-ab38-5266e8aa728e'
+bidding_details = { "Bidding_Offer_Result": "Rejected"}
+create_results = invoke_http("http://localhost:5007/v1/bidding_offer/update_bidding_offer_status_rejection/" + bidding_offer_uuid, method='PUT',
+                             json=bidding_details
+                             )
 
-# print()
-# print( create_results )
-# print()
+print()
+print( create_results )
+print()
 
 # print("============================ End of Bidding Offer Microservice =============================")
 
@@ -416,62 +416,62 @@ print()
 
 # print()
 
-print("================== Invoking Calendar Tasks Microservice ====================")
+# print("================== Invoking Calendar Tasks Microservice ====================")
 
-print()
+# print()
 
-print("==================== Create a Calendar Tasks ======================")
-# #invoke Calendar Tasks microservice to create a Calendar Tasks
-purchase_uuid = "0c4fdbe8-dc67-4f20-8849-83c96951dfe3"
-delivery_uuid = "1582aa22-8619-465c-aaad-ae20422a4e28"
-calendar_details = {
-                    "task_name": "Create Delivery Order for TSH Group", 
-                    "task_date": str(datetime.now().date()), 
-                    "task_time": str(datetime.now().time()), 
-                    "task_description": "Context will be: Delivery 3 goods to TSH Group. Contact Mr Max",
-                    "priority_level": "1",
-                    "task_completed": "Pending", 
-                    "user_uid": "879067b9-1faa-4fdf-bd05-918b162f2c55", 
-                    "calendar_uid": "045d064e-a770-41a8-b23f-14b8c01d0cd5"
-                }
-create_results = invoke_http("http://localhost:5001/v1/calendar_tasks/create_calendar_task", method='POST',
-                             json=calendar_details
-                             )
-
-print()
-print( create_results )
-print()
-
-print("==================== Getting all Calendar Tasks ======================")
-#invoke Calendar Tasks microservice to get all Calendar Tasks
-results = invoke_http("http://localhost:5001/v1/calendar_tasks/get_all_calendar_tasks", method='GET')
-
-print( type(results) )
-print()
-print( results )
-print()
-
-print("==================== Get selected Calendar Tasks ======================")
-# invoke Calendar Tasks microservice to get selected Calendar Tasks
-calendar_task_id = 'ad63d6f7-fd4c-4465-bc3f-1605b55d3c68'
-results = invoke_http("http://localhost:5001/v1/calendar_tasks/get_calendar_tasks_by_id/" + calendar_task_id, method='GET')
-
-print( type(results) )
-print()
-print( results )
-print()
-
-# print("==================== Update Calendar Tasks ======================")
-# # invoke calendar task microservice to update a task
-# calendar_task_id = 'ad63d6f7-fd4c-4465-bc3f-1605b55d3c68'
-# task_details = { "task_completed": "Completed"}
-# create_results = invoke_http("http://localhost:5001/v1/calendar_tasks/update_calendar_tasks/" + calendar_task_id, method='PUT',
-#                              json=task_details
+# print("==================== Create a Calendar Tasks ======================")
+# # #invoke Calendar Tasks microservice to create a Calendar Tasks
+# purchase_uuid = "0c4fdbe8-dc67-4f20-8849-83c96951dfe3"
+# delivery_uuid = "1582aa22-8619-465c-aaad-ae20422a4e28"
+# calendar_details = {
+#                     "task_name": "Create Delivery Order for TSH Group", 
+#                     "task_date": str(datetime.now().date()), 
+#                     "task_time": str(datetime.now().time()), 
+#                     "task_description": "Context will be: Delivery 3 goods to TSH Group. Contact Mr Max",
+#                     "priority_level": "1",
+#                     "task_completed": "Pending", 
+#                     "user_uid": "879067b9-1faa-4fdf-bd05-918b162f2c55", 
+#                     "calendar_uid": "045d064e-a770-41a8-b23f-14b8c01d0cd5"
+#                 }
+# create_results = invoke_http("http://localhost:5001/v1/calendar_tasks/create_calendar_task", method='POST',
+#                              json=calendar_details
 #                              )
 
 # print()
 # print( create_results )
 # print()
 
+# print("==================== Getting all Calendar Tasks ======================")
+# #invoke Calendar Tasks microservice to get all Calendar Tasks
+# results = invoke_http("http://localhost:5001/v1/calendar_tasks/get_all_calendar_tasks", method='GET')
 
-print("============================ End of Calendar Tasks Microservice =============================")
+# print( type(results) )
+# print()
+# print( results )
+# print()
+
+# print("==================== Get selected Calendar Tasks ======================")
+# # invoke Calendar Tasks microservice to get selected Calendar Tasks
+# calendar_task_id = 'ad63d6f7-fd4c-4465-bc3f-1605b55d3c68'
+# results = invoke_http("http://localhost:5001/v1/calendar_tasks/get_calendar_tasks_by_id/" + calendar_task_id, method='GET')
+
+# print( type(results) )
+# print()
+# print( results )
+# print()
+
+# # print("==================== Update Calendar Tasks ======================")
+# # # invoke calendar task microservice to update a task
+# # calendar_task_id = 'ad63d6f7-fd4c-4465-bc3f-1605b55d3c68'
+# # task_details = { "task_completed": "Completed"}
+# # create_results = invoke_http("http://localhost:5001/v1/calendar_tasks/update_calendar_tasks/" + calendar_task_id, method='PUT',
+# #                              json=task_details
+# #                              )
+
+# # print()
+# # print( create_results )
+# # print()
+
+
+# print("============================ End of Calendar Tasks Microservice =============================")

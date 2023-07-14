@@ -85,7 +85,7 @@ class Bidding_Offer(db.Model):
 
                     return jsonify({
                         "code": 500,
-                        "message": "bidding.py internal error: " + ex_str
+                        "message": "bidding_offer.py internal error: " + ex_str
                     }), 500
                 
                 return jsonify(
@@ -116,14 +116,14 @@ class Bidding_Offer(db.Model):
         else:
             return jsonify({
                     "code": 500,
-                    "message": "bidding.py internal error: " + ex_str
+                    "message": "bidding_offer.py internal error: " + ex_str
                 }), 500
 
     # Display all the bidding offers that the bidding have received from the delivery partners
     ## Note: Display all bidding offers in incremental order at frontend js
     @app.route("/v1/bidding_offer/get_all_bidding_offers/<string:BiddingUID>")
     def get_list_of_bidding_offers(BiddingUID):
-        bidding_offer_lists = Bidding_Offer.query.filter_by(BiddingUID=BiddingUID).all()
+        bidding_offer_lists = Bidding_Offer.query.filter_by(BiddingUID=BiddingUID, Bidding_Offer_Result="Review").all()
         try:
             if len(bidding_offer_lists):
                 return jsonify(
@@ -151,7 +151,7 @@ class Bidding_Offer(db.Model):
 
             return jsonify({
                 "code": 500,
-                "message": "bidding.py internal error: " + ex_str
+                "message": "bidding_offer.py internal error: " + ex_str
             }), 500
 
     # Get a specific bidding offer from a delivery partner to retrieve more details (e.g., Reviews/Ratings/Security Documents - KIV)
@@ -185,7 +185,7 @@ class Bidding_Offer(db.Model):
 
             return jsonify({
                 "code": 500,
-                "message": "bidding.py internal error: " + ex_str
+                "message": "bidding_offer.py internal error: " + ex_str
             }), 500
 
     # The acceptance or rejection of the bids will be performed automatically by the web portal after the bidding date/time have past.
@@ -236,7 +236,7 @@ class Bidding_Offer(db.Model):
 
                 return jsonify({
                     "code": 500,
-                    "message": "bidding.py internal error: " + ex_str
+                    "message": "bidding_offer.py internal error: " + ex_str
                 }), 500
 
         # if reached here, not a JSON request.
@@ -327,7 +327,7 @@ def update_bidding_offer_status(BiddingUID):
 
                 return jsonify({
                     "code": 500,
-                    "message": "bidding.py internal error: " + ex_str
+                    "message": "bidding_offer.py internal error: " + ex_str
                 }), 500
 
         # if reached here, not a JSON request.
@@ -336,15 +336,182 @@ def update_bidding_offer_status(BiddingUID):
             "message": "Invalid JSON input: " + str(request.get_data())
         }), 400
 
-## Continue from previous API call for rejection of bids
-# Run this API call to change the status of the bids after the bidding period have ended.
-# Check through each bid and pick up the cheapest bid. 
-# Once found, accept it and reject the rest. 
-# Acceptance of the 1st bid based on lowest costs and Rejection of all other bids to be confirmed later. 
+
+# @app.route("/v1/bidding_offer/confirm_bidding_offer_status/<string:BiddingUID>", methods=["PUT"])
+# def update_bidding_offer_status(BiddingUID):
+#     # Retrieve all the bids that are related to the Bidding ID
+#     bidding_offer = Bidding_Offer.query.filter_by(BiddingUID=BiddingUID, Bidding_Offer_Result="Accepted").first()
+
+#     # return jsonify(
+#     #     {
+#     #         "code": 200,
+#     #         "data": {
+#     #             "Published_Bids": [bidding_offer_details.json() for bidding_offer_details in bidding_offer]
+#     #         }      
+#     #     }
+#     # ), 201
+
+#     # published_bids = []
+#     # published_bids.append(bidding_offer)
+
+#     bid_dict = { "bidding_offer_id": [] , "bidding_offer_price": []}
+
+#     if bidding_offer:
+#         for offer_uid in bidding_offer:
+#             bid_dict["bidding_offer_id"].append(offer_uid.bidding_offer_uuid)    
+        
+#         for offer_price in bidding_offer:
+#             bid_dict["bidding_offer_price"].append(offer_price.bid_price)
+
+#         min_price = bid_dict["bidding_offer_price"][0]
+#         for price in bid_dict["bidding_offer_price"]:
+#             if price < min_price:
+#                 min_price = price
+
+#         for bids in bid_dict["bidding_offer_price"]:
+#             if min_price == bids:
+#                 selected_index =  bid_dict["bidding_offer_price"].index(min_price)
+#                 selected_bid_offer_uuid = bid_dict["bidding_offer_id"][selected_index]
+#                 break
+
+#         # Determine the lowest bid offer and auto accepting the bid
+#         selected_bid_offer = Bidding_Offer.query.filter_by(bidding_offer_uuid = selected_bid_offer_uuid).first()
+
+#         if request.is_json:
+#             try:
+#                 if selected_bid_offer:
+#                     data = request.get_json()
+#                     if data["Bidding_Offer_Result"]:
+#                         selected_bid_offer.Bidding_Offer_Result = data["Bidding_Offer_Result"]
+#                     else:
+#                         selected_bid_offer.Bidding_Offer_Result = selected_bid_offer.Bidding_Offer_Result
+#                     db.session.commit()
+#                     return jsonify(
+#                         {
+#                             "code": 200,
+#                             "data": {
+#                                 "bidding_result": {
+#                                     "bidding_details": selected_bid_offer.json()
+#                                 }
+#                             }
+#                         }
+#                     ), 201
+#                 return jsonify( 
+#                     {
+#                         "code": 404, 
+#                         "data": {
+#                             "Bidding_UUID": selected_bid_offer.bidding_offer_uuid,
+#                             "Message": "Bidding Offer not found."
+#                         }
+#                     }
+#                 ), 404
+#             except Exception as e:
+#                 # Unexpected error in code
+#                 exc_type, exc_obj, exc_tb = sys.exc_info()
+#                 fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+#                 ex_str = str(e) + " at " + str(exc_type) + ": " + \
+#                     fname + ": line " + str(exc_tb.tb_lineno)
+#                 print(ex_str)
+
+#                 return jsonify({
+#                     "code": 500,
+#                     "message": "bidding.py internal error: " + ex_str
+#                 }), 500
+
+#         # if reached here, not a JSON request.
+#         return jsonify({
+#             "code": 400,
+#             "message": "Invalid JSON input: " + str(request.get_data())
+#         }), 400
+
+
+# ## Continue from previous API call for rejection of bids
+# # Run this API call to change the status of the bids after the bidding period have ended.
+# # Check through each bid and pick up the cheapest bid. 
+# # Once found, accept it and reject the rest. 
+# # Acceptance of the 1st bid based on lowest costs and Rejection of all other bids to be confirmed later. 
+# @app.route("/v1/bidding_offer/update_bidding_offer_status_rejection/<string:BiddingUID>", methods=["PUT"])
+# def update_bidding_offer_status_rejected(BiddingUID):
+#     # Retrieve all the bids that are related to the Bidding ID
+#     bidding_offer = Bidding_Offer.query.filter_by(BiddingUID=BiddingUID, Bidding_Offer_Result="Review").all()
+
+#     bid_dict = { "bidding_offer_id": [] , "bidding_offer_price": []}
+
+#     if bidding_offer:
+#         for offer_uid in bidding_offer:
+#             bid_dict["bidding_offer_id"].append(offer_uid.bidding_offer_uuid)    
+        
+#         for offer_price in bidding_offer:
+#             bid_dict["bidding_offer_price"].append(offer_price.bid_price)
+
+#         min_price = bid_dict["bidding_offer_price"][0]
+#         for price in bid_dict["bidding_offer_price"]:
+#             if price < min_price:
+#                 min_price = price
+
+#         for bids in bid_dict["bidding_offer_price"]:
+#             if min_price == bids:
+#                 selected_index =  bid_dict["bidding_offer_price"].index(min_price)
+#                 bid_dict["bidding_offer_price"].remove(min_price)
+#                 selected_bid_offer_uuid = bid_dict["bidding_offer_id"][selected_index]
+#                 bid_dict["bidding_offer_id"].remove(selected_bid_offer_uuid)
+#                 break
+
+#         for remain_bids in bid_dict["bidding_offer_id"]:
+#             # Loop through all the remaining bids and updated as rejected
+#             rejected_bid_offer = Bidding_Offer.query.filter_by(bidding_offer_uuid = remain_bids).first()
+
+#             if request.is_json:
+#                 try:
+#                     if rejected_bid_offer:
+#                         data = request.get_json()
+#                         if data["Bidding_Offer_Result"]:
+#                             rejected_bid_offer.Bidding_Offer_Result = data["Bidding_Offer_Result"]
+#                         else:
+#                             rejected_bid_offer.Bidding_Offer_Result = rejected_bid_offer.Bidding_Offer_Result
+#                         db.session.commit()
+#                 except Exception as e:
+#                     # Unexpected error in code
+#                     exc_type, exc_obj, exc_tb = sys.exc_info()
+#                     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+#                     ex_str = str(e) + " at " + str(exc_type) + ": " + \
+#                         fname + ": line " + str(exc_tb.tb_lineno)
+#                     print(ex_str)
+
+#                     return jsonify({
+#                         "code": 500,
+#                         "message": "bidding.py internal error: " + ex_str
+#                     }), 500
+
+#             # if reached here, not a JSON request.
+#             # return jsonify({
+#             #     "code": 400,
+#             #     "message": "Invalid JSON input: " + str(request.get_data())
+#             # }), 400
+#         return jsonify(
+#             {
+#                 "code": 200,
+#                 "data": {
+#                     "bidding_result": {
+#                         "bidding_details": rejected_bid_offer.json()
+#                     }
+#                 }
+#             }
+#         ), 201
+#     return jsonify( 
+#         {
+#             "code": 404, 
+#             "data": {
+#                 "Bidding_UUID": rejected_bid_offer.bidding_offer_uuid,
+#                 "Message": "Bidding Offer not found."
+#             }
+#         }
+#     ), 404
+
 @app.route("/v1/bidding_offer/update_bidding_offer_status_rejection/<string:BiddingUID>", methods=["PUT"])
 def update_bidding_offer_status_rejected(BiddingUID):
     # Retrieve all the bids that are related to the Bidding ID
-    bidding_offer = Bidding_Offer.query.filter_by(BiddingUID=BiddingUID).all()
+    bidding_offer = Bidding_Offer.query.filter_by(BiddingUID=BiddingUID, Bidding_Offer_Result="Review", ).all()
 
     bid_dict = { "bidding_offer_id": [] , "bidding_offer_price": []}
 
@@ -355,18 +522,23 @@ def update_bidding_offer_status_rejected(BiddingUID):
         for offer_price in bidding_offer:
             bid_dict["bidding_offer_price"].append(offer_price.bid_price)
 
-        min_price = bid_dict["bidding_offer_price"][0]
-        for price in bid_dict["bidding_offer_price"]:
-            if price < min_price:
-                min_price = price
+        # For rejection case, no need this check -- confirm again
+        # if len(bid_dict["bidding_offer_id"]) > 2:
+        #     min_price = bid_dict["bidding_offer_price"][0]
+        #     for price in bid_dict["bidding_offer_price"]:
+        #         if price < min_price:
+        #             min_price = price
 
-        for bids in bid_dict["bidding_offer_price"]:
-            if min_price == bids:
-                selected_index =  bid_dict["bidding_offer_price"].index(min_price)
-                bid_dict["bidding_offer_price"].remove(min_price)
-                selected_bid_offer_uuid = bid_dict["bidding_offer_id"][selected_index]
-                bid_dict["bidding_offer_id"].remove(selected_bid_offer_uuid)
-                break
+        #     for bids in bid_dict["bidding_offer_price"]:
+        #         if min_price == bids:
+        #             selected_index =  bid_dict["bidding_offer_price"].index(min_price)
+        #             bid_dict["bidding_offer_price"].remove(min_price)
+        #             selected_bid_offer_uuid = bid_dict["bidding_offer_id"][selected_index]
+        #             bid_dict["bidding_offer_id"].remove(selected_bid_offer_uuid)
+        #             break
+        # else:
+        #     bid_dict["bidding_offer_id"] = bid_dict["bidding_offer_id"]
+        #     bid_dict["bidding_offer_price"] = bid_dict["bidding_offer_price"]
 
         for remain_bids in bid_dict["bidding_offer_id"]:
             # Loop through all the remaining bids and updated as rejected
@@ -414,7 +586,7 @@ def update_bidding_offer_status_rejected(BiddingUID):
             "code": 404, 
             "data": {
                 "Bidding_UUID": rejected_bid_offer.bidding_offer_uuid,
-                "Message": "Bidding Offer not found."
+                "Message": "Bidding Offer not found / All bidding offer have been declined by Delivery Provider."
             }
         }
     ), 404
